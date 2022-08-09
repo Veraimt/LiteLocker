@@ -1,6 +1,21 @@
-package com.example.examplemod.platform.services;
+package de.veraimt.litelocker.platform.services;
+
+import java.util.ServiceLoader;
+
+import static de.veraimt.litelocker.LiteLocker.LOGGER;
 
 public interface IPlatformHelper {
+
+    IPlatformHelper PLATFORM = load(IPlatformHelper.class);
+
+    private static <T> T load(@SuppressWarnings("SameParameterValue") Class<T> clazz) {
+
+        final T loadedService = ServiceLoader.load(clazz)
+                .findFirst()
+                .orElseThrow(() -> new NullPointerException("Failed to load service for " + clazz.getName()));
+        LOGGER.debug("Loaded {} for service {}", loadedService, clazz);
+        return loadedService;
+    }
 
     /**
      * Gets the name of the current platform

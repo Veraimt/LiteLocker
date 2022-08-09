@@ -83,6 +83,10 @@ tasks.withType(JavaCompile) {
 
 processResources {
     from project(":Common").sourceSets.main.resources
+
+    filesMatching(['META-INF/mods.toml']) {
+        expand project.properties
+    }
 }
 
 

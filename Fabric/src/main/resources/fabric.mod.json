@@ -1,39 +1,37 @@
 {
     "schemaVersion": 1,
-    "id": "modid",
+    "id": "${mod_id}",
     "version": "${version}",
-  
-    "name": "Example Mod",
-    "description": "This is an example description! Tell everyone what your mod is about!",
+
+    "name": "${mod_name}",
+    "description": "${description}",
     "authors": [
-      "Me!"
+      "${authors}"
     ],
     "contact": {
-      "homepage": "https://fabricmc.net/",
-      "sources": "https://github.com/FabricMC/fabric-example-mod"
+      "homepage": "${homepage}",
+      "sources": "${sources}",
+      "issues": "${issues}"
     },
-  
-    "license": "CC0-1.0",
-    "icon": "assets/modid/icon.png",
+
+    "license": "${license}",
+    "icon": "assets/${mod_id}/icon.png",
   
     "environment": "*",
     "entrypoints": {
       "main": [
-        "com.example.examplemod.ExampleMod"
+        "de.veraimt.litelocker.LiteLockerFabric"
       ]
     },
     "mixins": [
-      "modid.mixins.json"
+      "litelocker.mixins.json"
     ],
-  
+
     "depends": {
       "fabricloader": ">=0.13",
       "fabric": "*",
-      "minecraft": "1.18.x",
+      "minecraft": "${fabric_mc_version}",
       "java": ">=17"
-    },
-    "suggests": {
-      "another-mod": "*"
     }
   }
   

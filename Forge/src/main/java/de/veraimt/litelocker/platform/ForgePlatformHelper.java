@@ -1,6 +1,6 @@
-package com.example.examplemod.platform;
+package de.veraimt.litelocker.platform;
 
-import com.example.examplemod.platform.services.IPlatformHelper;
+import de.veraimt.litelocker.platform.services.IPlatformHelper;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.loading.FMLLoader;
 
