@@ -24,11 +24,12 @@
       ]
     },
     "mixins": [
-      "litelocker.mixins.json"
+      "litelocker.mixins.json",
+      "litelocker_fabric.mixins.json"
     ],
 
     "depends": {
-      "fabricloader": ">=0.13",
+      "fabricloader": ">=${fabric_loader_version}",
       "fabric": "*",
       "minecraft": "${fabric_mc_version}",
       "java": ">=17"

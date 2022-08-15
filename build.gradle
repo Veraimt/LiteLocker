@@ -1,5 +1,5 @@
 subprojects {
-    version = "${mod_version}"
+    version = project.mod_version
     
     apply plugin: 'java'
     
@@ -42,10 +42,6 @@ subprojects {
             url = 'https://repo.spongepowered.org/repository/maven-public/'
         }
 
-        maven {
-            name = 'BlameJared Maven (CrT / Bookshelf)'
-            url = 'https://maven.blamejared.com'
-        }
     }
 
     tasks.withType(JavaCompile).configureEach {

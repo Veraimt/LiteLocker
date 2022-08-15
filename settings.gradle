@@ -13,5 +13,5 @@ pluginManagement {
     }
 }
 
-rootProject.name = 'LiteLocker'
+rootProject.name = mod_name
 include("Common", "Fabric", "Forge")

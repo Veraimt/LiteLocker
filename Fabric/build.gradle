@@ -40,6 +40,9 @@ processResources {
     filesMatching("fabric.mod.json") {
         expand project.properties
     }
+    filesMatching("${mod_id}.mixins.json") {
+        expand "refmap_target": "${archivesBaseName}-"
+    }
 }
 
 tasks.withType(JavaCompile) {
