@@ -3,7 +3,6 @@ package de.veraimt.litelocker.mixin.containers;
 import de.veraimt.litelocker.protection.ProtectableContainer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -15,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.Arrays;
 
 @Mixin(RandomizableContainerBlockEntity.class)
-public abstract class RandomizableContainerBlockEntityMixin extends BaseContainerBlockEntity implements ProtectableContainer {
+public abstract class RandomizableContainerBlockEntityMixin extends BaseContainerBlockEntityMixin implements ProtectableContainer {
 
     protected RandomizableContainerBlockEntityMixin(BlockEntityType<?> $$0, BlockPos $$1, BlockState $$2) {
         super($$0, $$1, $$2);

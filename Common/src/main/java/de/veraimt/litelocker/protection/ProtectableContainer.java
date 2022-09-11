@@ -17,7 +17,7 @@ public interface ProtectableContainer extends BlockEntityProvider<BaseContainerB
 
     default void removeProtector(Protector<?> protector) {
         protectors().remove(protector);
-        protectors().stream().findFirst().ifPresent(Protector::setMain);
+        combinedProtectors().stream().findFirst().ifPresent(Protector::setMain);
     }
 
     default Set<Protector<?>> findProtectors() {
@@ -37,18 +37,22 @@ public interface ProtectableContainer extends BlockEntityProvider<BaseContainerB
         return list;
     }
 
+    default Set<Protector<?>> combinedProtectors() {
+        return protectors();
+    }
+
     Set<Protector<?>> protectors();
 
     default boolean hasProtector() {
-        return !protectors().isEmpty();
+        return !combinedProtectors().isEmpty();
     }
 
     default boolean hasProtector(Protector<?> protector) {
-        return protectors().contains(protector);
+        return combinedProtectors().contains(protector);
     }
 
     default boolean hasUser(UUID playerUUID) {
-        for (var p : protectors()) {
+        for (var p : combinedProtectors()) {
             if (p.hasUser(playerUUID)) {
                 return true;
             }
