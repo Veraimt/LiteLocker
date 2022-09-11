@@ -1,5 +1,6 @@
 package de.veraimt.litelocker.platform.services;
 
+import java.io.File;
 import java.util.ServiceLoader;
 
 import static de.veraimt.litelocker.LiteLocker.LOGGER;
@@ -38,4 +39,6 @@ public interface IPlatformHelper {
      * @return True if in a development environment, false otherwise.
      */
     boolean isDevelopmentEnvironment();
+
+    File getConfigFile();
 }
