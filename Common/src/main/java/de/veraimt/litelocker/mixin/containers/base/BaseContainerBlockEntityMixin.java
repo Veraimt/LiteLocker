@@ -1,7 +1,7 @@
 package de.veraimt.litelocker.mixin.containers.base;
 
-import de.veraimt.litelocker.protection.ProtectableContainer;
-import de.veraimt.litelocker.protection.Protector;
+import de.veraimt.litelocker.protection.ProtectableBlockContainer;
+import de.veraimt.litelocker.protection.Protection;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -9,13 +9,11 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import org.spongepowered.asm.mixin.Mixin;
 
-import java.util.Set;
-
 @Mixin(BaseContainerBlockEntity.class)
-public abstract class BaseContainerBlockEntityMixin extends BlockEntity implements ProtectableContainer {
+public abstract class BaseContainerBlockEntityMixin extends BlockEntity implements ProtectableBlockContainer {
 
 
-    public Set<Protector<?>> protectors;
+    protected Protection protection;
 
     //Mixins
 
@@ -26,20 +24,12 @@ public abstract class BaseContainerBlockEntityMixin extends BlockEntity implemen
 
     @Override
     public void setRemoved() {
-        protectors().clear();
+        set(null);
         super.setRemoved();
-        onChanged();
-    }
-
-    protected Set<Protector<?>> protectorsInternal() {
-        if (protectors == null) {
-            protectors = findProtectors();
-        }
-
-        return protectors;
     }
 
     //Interface Overrides
+
 
     @Override
     public BaseContainerBlockEntity getBlockEntity() {
@@ -47,12 +37,16 @@ public abstract class BaseContainerBlockEntityMixin extends BlockEntity implemen
     }
 
     @Override
-    public Set<Protector<?>> protectors() {
-        return protectorsInternal();
+    public Protection get() {
+        if (protection == null)
+            protection = Protection.find(this);
+        return protection;
     }
 
     @Override
-    public void onChanged() {
-        System.out.println("onChanged");
+    public Protection set(Protection newVal) {
+        var temp = protection;
+        protection = newVal;
+        return temp;
     }
 }

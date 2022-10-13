@@ -26,7 +26,6 @@ public abstract class RandomizableContainerBlockEntityMixin extends BaseContaine
         System.out.println("Method Call: "+ getClass().getName() +"#canOpen");
         System.out.println("STACKTRACE " + Arrays.toString(Thread.currentThread().getStackTrace()));
 
-        System.out.println(protectors());
 
 
 

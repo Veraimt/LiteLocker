@@ -17,6 +17,7 @@
     "containers.ChestBlockEntityMixin",
     "containers.HopperBlockEntityMixin",
     "containers.base.BaseContainerBlockEntityMixin",
+    "containers.base.CompoundContainerMixin",
     "containers.base.ContainerBlockEntityMixin",
     "containers.base.RandomizableContainerBlockEntityMixin"
   ],

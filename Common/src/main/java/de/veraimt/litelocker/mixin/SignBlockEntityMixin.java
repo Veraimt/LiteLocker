@@ -1,6 +1,7 @@
 package de.veraimt.litelocker.mixin;
 
 import de.veraimt.litelocker.entities.BlockPosState;
+import de.veraimt.litelocker.protection.ProtectableBlockContainer;
 import de.veraimt.litelocker.protection.ProtectorSign;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

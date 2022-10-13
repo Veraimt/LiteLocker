@@ -62,7 +62,7 @@ public interface ProtectorSign extends Protector<SignBlockEntity> {
         }
 
         Level world = getBlockEntity().getLevel();
-        ProtectableContainer container = getAttachedContainer();
+        ProtectableBlockContainer container = getAttachedContainer();
 
         if (container == null) {
             System.out.println("not a container!");
