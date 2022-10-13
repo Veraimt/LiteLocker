@@ -7,9 +7,7 @@ import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.ChestBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.ChestBlockEntity;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
@@ -137,4 +135,9 @@ public interface Protector<T extends BlockEntity> extends BlockEntityProvider<T>
         getUsers()[i] = null;
     }
 
+    default void changed() {
+        System.out.println("!!changed");
+        if (getAttachedContainer() != null)
+            getAttachedContainer().onChanged();
+    }
 }

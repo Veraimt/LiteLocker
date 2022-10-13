@@ -12,12 +12,20 @@ import java.util.*;
 public interface ProtectableContainer extends BlockEntityProvider<BaseContainerBlockEntity> {
 
     default void addProtector(Protector<?> protector) {
+        System.out.println("+Adding Protector: " + protector);
+        System.out.println("+before protectors: " + protectors());
         protectors().add(protector);
+        System.out.println("+after protectors: " + protectors());
+        onChanged();
+        System.out.println("+combinedProtectors: " + combinedProtectors());
     }
 
     default void removeProtector(Protector<?> protector) {
+        System.out.println("-removed Protector: " + protector);
         protectors().remove(protector);
-        combinedProtectors().stream().findFirst().ifPresent(Protector::setMain);
+        onChanged();
+        if (combinedProtectors().stream().noneMatch(Protector::isMain))
+            combinedProtectors().stream().findFirst().ifPresent(Protector::setMain);
     }
 
     default Set<Protector<?>> findProtectors() {
@@ -44,6 +52,7 @@ public interface ProtectableContainer extends BlockEntityProvider<BaseContainerB
     Set<Protector<?>> protectors();
 
     default boolean hasProtector() {
+        System.out.println("?combinedProtectors: " + combinedProtectors());
         return !combinedProtectors().isEmpty();
     }
 
@@ -66,4 +75,6 @@ public interface ProtectableContainer extends BlockEntityProvider<BaseContainerB
 
         return hasUser(player.getUUID());
     }
+
+    void onChanged();
 }

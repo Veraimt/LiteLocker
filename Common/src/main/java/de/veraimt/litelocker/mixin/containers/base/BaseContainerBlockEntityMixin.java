@@ -1,4 +1,4 @@
-package de.veraimt.litelocker.mixin.containers;
+package de.veraimt.litelocker.mixin.containers.base;
 
 import de.veraimt.litelocker.protection.ProtectableContainer;
 import de.veraimt.litelocker.protection.Protector;
@@ -28,9 +28,16 @@ public abstract class BaseContainerBlockEntityMixin extends BlockEntity implemen
     public void setRemoved() {
         protectors().clear();
         super.setRemoved();
+        onChanged();
     }
 
+    protected Set<Protector<?>> protectorsInternal() {
+        if (protectors == null) {
+            protectors = findProtectors();
+        }
 
+        return protectors;
+    }
 
     //Interface Overrides
 
@@ -41,10 +48,11 @@ public abstract class BaseContainerBlockEntityMixin extends BlockEntity implemen
 
     @Override
     public Set<Protector<?>> protectors() {
-        if (protectors == null) {
-            protectors = findProtectors();
-        }
+        return protectorsInternal();
+    }
 
-        return protectors;
+    @Override
+    public void onChanged() {
+        System.out.println("onChanged");
     }
 }

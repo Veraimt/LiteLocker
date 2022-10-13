@@ -1,4 +1,4 @@
-package de.veraimt.litelocker.mixin.containers;
+package de.veraimt.litelocker.mixin.containers.base;
 
 import de.veraimt.litelocker.protection.ProtectableContainer;
 import net.minecraft.core.BlockPos;

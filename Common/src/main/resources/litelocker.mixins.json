@@ -14,10 +14,11 @@
     "SignBlockMixin",
     "SignItemMixin",
     "containers.AbstractFurnaceBlockEntityMixin",
-    "containers.BaseContainerBlockEntityMixin",
     "containers.ChestBlockEntityMixin",
-    "containers.ContainerBlockEntityMixin",
-    "containers.RandomizableContainerBlockEntityMixin"
+    "containers.HopperBlockEntityMixin",
+    "containers.base.BaseContainerBlockEntityMixin",
+    "containers.base.ContainerBlockEntityMixin",
+    "containers.base.RandomizableContainerBlockEntityMixin"
   ],
   "client": [
     "TestMixin"

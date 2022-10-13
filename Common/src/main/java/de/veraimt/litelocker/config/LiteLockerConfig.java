@@ -20,7 +20,9 @@ public class LiteLockerConfig {
     }
 
     public boolean getEnableAutoLocking() {
-        return enableAutoLocking;
+        //TODO Activate when functional
+        //return enableAutoLocking;
+        return false;
     }
 
     public void setEnableAutoLocking(boolean enableAutoLocking) {

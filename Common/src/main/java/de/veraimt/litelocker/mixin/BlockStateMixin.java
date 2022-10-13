@@ -18,6 +18,7 @@ import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.BlockHitResult;
 import org.spongepowered.asm.mixin.Mixin;
 
+@Deprecated
 @Mixin(BlockState.class)
 public abstract class BlockStateMixin extends BlockBehaviour.BlockStateBase {
 
@@ -39,46 +40,6 @@ public abstract class BlockStateMixin extends BlockBehaviour.BlockStateBase {
         System.out.println("Method Call: "+ getClass().getName() +"#use");
 
         System.out.println("using " + getBlock());
-
-        //TODO REMOVE
-        if (true)
-            return super.use(world, player, hand, blockHitResult);
-
-        if (!LiteLocker.config.getEnableAutoLocking()) {
-            return super.use(world, player, hand, blockHitResult);
-        }
-
-        if (!hasBlockEntity())
-            return super.use(world, player, hand, blockHitResult);
-
-        BlockEntity blockEntity = world.getBlockEntity(blockHitResult.getBlockPos());
-
-
-        if (blockEntity instanceof ProtectableContainer container) {
-            System.out.println("Protectable Container");
-            if (player.getItemInHand(hand).getItem() instanceof SignItem) {
-                //Attempt to protect block with sign
-                return InteractionResult.PASS;
-
-                //Next the ItemStack will be used
-                //See ItemStackMixin
-            }
-
-            System.out.println(container.protectors());
-
-            if (container.hasProtector()) {
-                if (container.protectors().stream().noneMatch(protector -> protector.hasUser(player.getUUID()))) {
-                    return InteractionResult.SUCCESS;
-                }
-            }
-
-            //allow normal access if player is permitted or there is no protection
-            return super.use(world, player, hand, blockHitResult);
-        }
-
-
-
-        //Block cant be protected, normal access
 
         return super.use(world, player, hand, blockHitResult);
 

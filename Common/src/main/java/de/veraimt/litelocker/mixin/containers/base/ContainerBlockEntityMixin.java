@@ -1,4 +1,4 @@
-package de.veraimt.litelocker.mixin.containers;
+package de.veraimt.litelocker.mixin.containers.base;
 
 import de.veraimt.litelocker.protection.ProtectableContainer;
 import net.minecraft.core.BlockPos;
@@ -23,6 +23,8 @@ public abstract class ContainerBlockEntityMixin extends BaseContainerBlockEntity
 
     @Inject(method = "stillValid", at = @At("RETURN"), cancellable = true)
     public void stillValid(Player player, CallbackInfoReturnable<Boolean> cir) {
+        //Minecraft Info
+        //This Method is called every Tick from the Player as long as he has this container open
         cir.setReturnValue(cir.getReturnValue() && canAccess(player));
     }
 }

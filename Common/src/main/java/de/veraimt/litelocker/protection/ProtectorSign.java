@@ -70,6 +70,7 @@ public interface ProtectorSign extends Protector<SignBlockEntity> {
         }
 
         if (container.hasProtector() && !container.hasProtector(this)) {
+            System.out.println("####asdsadasdsasd");
             if (!tag.equals(Tag.MORE_USERS)) {
                 firstLine = Component.nullToEmpty(Tag.MORE_USERS.tag);
             }
@@ -82,7 +83,7 @@ public interface ProtectorSign extends Protector<SignBlockEntity> {
             Player player = world.getServer().getPlayerList().getPlayerByName(
                     message.getContents());
             System.out.println("message: " + message);
-            System.out.println("found Player: " + player);
+            System.out.println("found Player: " + (player == null ? null : player.getName()));
             if (player != null) {
                 getUsers()[i-1] = player.getUUID();
 
