@@ -1,4 +1,4 @@
-package de.veraimt.litelocker.mixin;
+package de.veraimt.litelocker.mixin.blocks;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.CompoundContainer;
@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+@Deprecated(forRemoval = true)
 @Mixin(ChestBlock.class)
 public abstract class ChestBlockMixin extends AbstractChestBlock<ChestBlockEntity> {
 
