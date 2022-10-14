@@ -27,10 +27,7 @@ public class Protection {
     }
 
     public boolean removeProtector(Protector<?> protector) {
-        var b = protectors.remove(protector);
-        if (protector.isMain())
-            protectors.stream().findAny().ifPresent(Protector::setMain);
-        return b;
+        return protectors.remove(protector);
     }
 
     public boolean hasProtector() {

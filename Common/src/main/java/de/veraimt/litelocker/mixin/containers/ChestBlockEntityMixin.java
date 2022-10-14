@@ -33,8 +33,6 @@ public class ChestBlockEntityMixin extends RandomizableContainerBlockEntityMixin
 
     @Override
     public void addProtector(Protector<?> protector) {
-        if (getContainer() instanceof CompoundContainer c)
-            ((ProtectableContainer) c).addProtector(protector);
         super.addProtector(protector);
     }
 

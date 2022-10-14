@@ -29,18 +29,21 @@ public class CompoundContainerMixin implements ProtectableContainer {
 
     @Override
     public void addProtector(Protector<?> protector) {
-        var attachedContainer = protector.getAttachedContainer();
-        if (container1().equals(attachedContainer)) {
-            container1().get().addProtector(protector);
-        } else if (container2().equals(attachedContainer)) {
-            container2().get().addProtector(protector);
-        }
+        //Not Relevant
     }
 
     @Override
     public void removeProtector(Protector<?> protector) {
-        if (!container1().get().removeProtector(protector))
-            container2().get().removeProtector(protector);
+        container1().get().removeProtector(protector);
+        container2().get().removeProtector(protector);
+
+        if (!protector.isMain())
+            return;
+
+        container1().get().protectors().stream().findAny().ifPresentOrElse(Protector::setMain,
+                () -> container2().get().protectors().stream().findAny().ifPresent(Protector::setMain)
+        );
+
     }
 
     @Override
