@@ -2,11 +2,9 @@ package de.veraimt.litelocker.mixin.containers.base;
 
 import de.veraimt.litelocker.protection.ProtectableBlockContainer;
 import de.veraimt.litelocker.protection.ProtectableContainer;
-import de.veraimt.litelocker.protection.Protection;
 import de.veraimt.litelocker.protection.Protector;
 import net.minecraft.world.CompoundContainer;
 import net.minecraft.world.Container;
-import net.minecraft.world.entity.player.Player;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -28,11 +26,6 @@ public class CompoundContainerMixin implements ProtectableContainer {
     }
 
     @Override
-    public void addProtector(Protector<?> protector) {
-        //Not Relevant
-    }
-
-    @Override
     public void removeProtector(Protector<?> protector) {
         container1().get().removeProtector(protector);
         container2().get().removeProtector(protector);
@@ -48,12 +41,14 @@ public class CompoundContainerMixin implements ProtectableContainer {
 
     @Override
     public boolean hasProtector() {
-        return container1().get().hasProtector() || container2().get().hasProtector();
+        //Simple OR ( | ) to make sure that the other containers protection is also initialized
+        return container1().get().hasProtector() | container2().get().hasProtector();
     }
 
     @Override
     public boolean hasProtector(Protector<?> protector) {
-        return container1().get().hasProtector(protector) || container2().get().hasProtector(protector);
+        //Simple OR ( | ) to make sure that the other containers protection is also initialized
+        return container1().get().hasProtector(protector) | container2().get().hasProtector(protector);
     }
 
     @Override

@@ -2,7 +2,6 @@ package de.veraimt.litelocker.protection;
 
 import de.veraimt.litelocker.utils.MixinAccessible;
 import net.minecraft.core.Direction;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
@@ -13,21 +12,18 @@ import java.util.UUID;
 
 public class Protection {
 
-    public Protection() {
-    }
-
     private Protection(Set<Protector<?>> protectors) {
         this.protectors = protectors;
     }
 
-    Set<Protector<?>> protectors = new HashSet<>();
+    Set<Protector<?>> protectors;
 
     public void addProtector(Protector<?> protector) {
         protectors.add(protector);
     }
 
-    public boolean removeProtector(Protector<?> protector) {
-        return protectors.remove(protector);
+    public void removeProtector(Protector<?> protector) {
+        protectors.remove(protector);
     }
 
     public boolean hasProtector() {
@@ -51,12 +47,6 @@ public class Protection {
         return protectors;
     }
 
-    public boolean canAccess(Player player) {
-        if (!hasProtector())
-            return true;
-
-        return hasUser(player.getUUID());
-    }
 
     public static Protection find(ProtectableBlockContainer container) {
         return new Protection(findProtectors(container));
@@ -78,6 +68,13 @@ public class Protection {
         }
         return list;
 
+    }
+
+    @Override
+    public String toString() {
+        return "Protection{" +
+                "protectors=" + protectors +
+                '}';
     }
 
     public interface Access extends MixinAccessible<Protection> {}

@@ -1,4 +1,4 @@
-package de.veraimt.litelocker.mixin;
+package de.veraimt.litelocker.mixin.test;
 
 import de.veraimt.litelocker.LiteLocker;
 import net.minecraft.client.gui.screens.TitleScreen;

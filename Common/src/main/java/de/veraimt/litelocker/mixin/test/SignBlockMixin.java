@@ -1,4 +1,4 @@
-package de.veraimt.litelocker.mixin;
+package de.veraimt.litelocker.mixin.test;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.LivingEntity;

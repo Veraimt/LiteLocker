@@ -1,17 +1,10 @@
 package de.veraimt.litelocker.protection;
 
-import de.veraimt.litelocker.utils.BlockEntityProvider;
-import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntity;
 
-import java.util.*;
+import java.util.UUID;
 
 public interface ProtectableContainer {
-
-    void addProtector(Protector<?> protector);
 
     void removeProtector(Protector<?> protector);
 
