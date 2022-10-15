@@ -2,9 +2,10 @@ package de.veraimt.litelocker.protection;
 
 import net.minecraft.world.entity.player.Player;
 
+import javax.annotation.Nullable;
 import java.util.UUID;
 
-public interface ProtectableContainer {
+public interface ProtectableContainer extends Protectable {
 
     void removeProtector(Protector<?> protector);
 
@@ -14,10 +15,11 @@ public interface ProtectableContainer {
 
     boolean hasUser(UUID playerUUID);
 
-    default boolean canAccess(Player player) {
+    @Override
+    default boolean canAccess(@Nullable Player player) {
         if (!hasProtector())
             return true;
 
-        return hasUser(player.getUUID());
+        return hasUser(player == null ? null : player.getUUID());
     }
 }

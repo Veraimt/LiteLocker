@@ -12,7 +12,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import javax.annotation.Nullable;
 import java.util.UUID;
 
-public interface Protector<T extends BlockEntity> extends BlockEntityProvider<T> {
+public interface Protector<T extends BlockEntity> extends BlockEntityProvider<T>, Protectable {
 
     final class NbtKeys {
         static final String DATA = "protector";
@@ -116,8 +116,12 @@ public interface Protector<T extends BlockEntity> extends BlockEntityProvider<T>
     }
 
     default boolean hasUser(UUID playerUUID) {
+        if (playerUUID == null)
+            return false;
         for (var uuid : getUsers()) {
-            if (playerUUID.equals(uuid))
+            if (uuid == null)
+                continue;
+            if (uuid.equals(playerUUID))
                 return true;
         }
         return false;
@@ -133,5 +137,10 @@ public interface Protector<T extends BlockEntity> extends BlockEntityProvider<T>
             }
         }
         getUsers()[i] = null;
+    }
+
+    @Override
+    default boolean canAccess(Player player) {
+        return !isValid() || hasUser(player == null ? null : player.getUUID());
     }
 }

@@ -35,6 +35,9 @@ public class Protection {
     }
 
     public boolean hasUser(UUID playerUUID) {
+        if (playerUUID == null)
+            return false;
+
         for (var p : protectors) {
             if (p.hasUser(playerUUID)) {
                 return true;
