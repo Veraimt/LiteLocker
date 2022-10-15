@@ -6,11 +6,9 @@
   "compatibilityLevel": "JAVA_17",
   "mixins": [
     "ExplosionDamageCalculatorMixin",
-    "test.LevelMixin",
     "PlayerMixin",
     "SignBlockEntityMixin",
     "SignItemMixin",
-    "blocks.ChestBlockMixin",
     "blocks.FurnaceBlockMixin",
     "containers.ChestBlockEntityMixin",
     "containers.HopperBlockEntityMixin",
@@ -23,9 +21,6 @@
     "ServerPlayerGameModeMixin",
     "test.ServerPlayerMixin",
     "test.SignBlockMixin"
-  ],
-  "client": [
-    "test.TestMixin"
   ],
   "injectors": {
     "defaultRequire": 1
