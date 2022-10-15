@@ -1,7 +1,8 @@
 package de.veraimt.litelocker.mixin;
 
 import de.veraimt.litelocker.LiteLocker;
-import de.veraimt.litelocker.protection.ProtectorSign;
+import de.veraimt.litelocker.protection.protector.ProtectorItem;
+import de.veraimt.litelocker.protection.protector.ProtectorSign;
 import de.veraimt.litelocker.utils.SignManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionResult;
@@ -13,7 +14,6 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.SignBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -23,7 +23,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.Arrays;
 
 @Mixin(SignItem.class)
-public abstract class SignItemMixin extends StandingAndWallBlockItem {
+public abstract class SignItemMixin extends StandingAndWallBlockItem implements ProtectorItem {
 
     //Used for auto-locking
 
@@ -46,7 +46,7 @@ public abstract class SignItemMixin extends StandingAndWallBlockItem {
             return;
         }
 
-        if (player.isCrouching())
+        if (player.isSecondaryUseActive())
             return;
 
         ProtectorSign protectorSign = (ProtectorSign) world.getBlockEntity(blockPos);

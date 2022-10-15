@@ -1,8 +1,8 @@
-package de.veraimt.litelocker.protection;
+package de.veraimt.litelocker.protection.protectable;
 
-import de.veraimt.litelocker.mixin.containers.base.BaseContainerBlockEntityMixin;
+import de.veraimt.litelocker.protection.Protection;
+import de.veraimt.litelocker.protection.protector.Protector;
 import de.veraimt.litelocker.utils.BlockEntityProvider;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
 
 import java.util.UUID;
@@ -16,7 +16,7 @@ public interface ProtectableBlockContainer extends ProtectableContainer, Protect
     default void removeProtector(Protector<?> protector) {
         get().removeProtector(protector);
         if (protector.isMain())
-            get().protectors.stream().findAny().ifPresent(Protector::setMain);
+            get().protectors().stream().findAny().ifPresent(Protector::setMain);
     }
 
     default boolean hasProtector() {

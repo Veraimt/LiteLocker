@@ -1,6 +1,6 @@
 package de.veraimt.litelocker.mixin.containers.base;
 
-import de.veraimt.litelocker.protection.ProtectableBlockContainer;
+import de.veraimt.litelocker.protection.protectable.ProtectableBlockContainer;
 import de.veraimt.litelocker.protection.Protection;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;

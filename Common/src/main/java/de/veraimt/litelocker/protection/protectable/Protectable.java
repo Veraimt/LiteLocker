@@ -1,4 +1,4 @@
-package de.veraimt.litelocker.protection;
+package de.veraimt.litelocker.protection.protectable;
 
 import net.minecraft.world.entity.player.Player;
 

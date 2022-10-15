@@ -1,7 +1,7 @@
 package de.veraimt.litelocker.utils;
 
-import de.veraimt.litelocker.protection.ProtectableContainer;
-import de.veraimt.litelocker.protection.ProtectorSign;
+import de.veraimt.litelocker.protection.protectable.ProtectableContainer;
+import de.veraimt.litelocker.protection.protector.ProtectorSign;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;

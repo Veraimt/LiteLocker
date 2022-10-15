@@ -1,6 +1,6 @@
 package de.veraimt.litelocker.mixin.blocks;
 
-import de.veraimt.litelocker.protection.ProtectableContainer;
+import de.veraimt.litelocker.protection.protectable.ProtectableContainer;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.AbstractFurnaceBlock;

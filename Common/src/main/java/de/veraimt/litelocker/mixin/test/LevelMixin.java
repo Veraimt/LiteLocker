@@ -1,6 +1,6 @@
 package de.veraimt.litelocker.mixin.test;
 
-import de.veraimt.litelocker.protection.Protectable;
+import de.veraimt.litelocker.protection.protectable.Protectable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;

@@ -1,5 +1,6 @@
-package de.veraimt.litelocker.protection;
+package de.veraimt.litelocker.protection.protector;
 
+import de.veraimt.litelocker.protection.protectable.ProtectableBlockContainer;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
@@ -56,8 +57,8 @@ public interface ProtectorSign extends Protector<SignBlockEntity> {
         Tag tag = Tag.fromString(firstLine.getContents());
 
         if (tag == null) {
-            System.out.println("wrong tag");
-            deactivate();
+            System.out.println("!wrong tag");
+            Protector.super.deactivate();
             return;
         }
 

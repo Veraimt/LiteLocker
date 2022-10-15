@@ -1,8 +1,7 @@
 package de.veraimt.litelocker.mixin;
 
 import de.veraimt.litelocker.entities.BlockPosState;
-import de.veraimt.litelocker.protection.ProtectableBlockContainer;
-import de.veraimt.litelocker.protection.ProtectorSign;
+import de.veraimt.litelocker.protection.protector.ProtectorSign;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -43,7 +42,7 @@ public abstract class SignBlockEntityMixin extends BlockEntity implements Protec
     @Inject(method = "executeClickCommands", at = @At("HEAD"))
     public void onClick(ServerPlayer player, CallbackInfoReturnable<Boolean> cir) {
         System.out.println("Sign onClick");
-        if (isValid()) {
+        if (canAccess(player)) {
             setEditable(true);
             player.openTextEdit(getBlockEntity());
         }
@@ -54,8 +53,7 @@ public abstract class SignBlockEntityMixin extends BlockEntity implements Protec
     public void setChanged() {
         System.out.println("Method Call: "+ getClass().getName() +"#setChanged");
         System.out.println("STACKTRACE" + Arrays.toString(Thread.currentThread().getStackTrace()));
-        if (isValid())
-            activate();
+        onChanged();
         super.setChanged();
     }
 

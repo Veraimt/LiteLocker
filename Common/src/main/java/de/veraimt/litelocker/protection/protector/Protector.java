@@ -1,6 +1,11 @@
-package de.veraimt.litelocker.protection;
+package de.veraimt.litelocker.protection.protector;
 
 import de.veraimt.litelocker.entities.BlockPosState;
+import de.veraimt.litelocker.protection.protectable.Protectable;
+import de.veraimt.litelocker.protection.protectable.ProtectableBlockContainer;
+import de.veraimt.litelocker.protection.protectable.ProtectableBlockRegistry;
+import de.veraimt.litelocker.protection.protectable.ProtectableContainer;
+import de.veraimt.litelocker.utils.AccessChecker;
 import de.veraimt.litelocker.utils.BlockEntityProvider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
@@ -62,14 +67,24 @@ public interface Protector<T extends BlockEntity> extends BlockEntityProvider<T>
     }
 
     default void deactivate() {
+        System.out.println("!call deactivate");
         var container = getAttachedContainer();
 
-        if (container != null)
+        if (container != null) {
+            System.out.println("do remove");
             container.removeProtector(this);
+        }
     }
 
     default void onRemoved() {
         deactivate();
+    }
+
+    default void onChanged() {
+        if (isValid())
+            activate();
+        else
+            deactivate();
     }
 
     /**
@@ -141,6 +156,16 @@ public interface Protector<T extends BlockEntity> extends BlockEntityProvider<T>
 
     @Override
     default boolean canAccess(Player player) {
-        return !isValid() || hasUser(player == null ? null : player.getUUID());
+        if (!isValid())
+            return true;
+
+        if (hasUser(player == null ? null : player.getUUID()))
+            return true;
+
+        //If Player is not on this Protector, search for it on the other Protectors that the attached Block has
+
+        var attachedBlock = getAttachedBlock();
+        var blockEntity = getBlockEntity().getLevel().getBlockEntity(attachedBlock.blockPos());
+        return AccessChecker.canAccess(blockEntity, player);
     }
 }

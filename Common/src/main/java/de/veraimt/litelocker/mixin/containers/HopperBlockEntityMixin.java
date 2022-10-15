@@ -1,6 +1,6 @@
 package de.veraimt.litelocker.mixin.containers;
 
-import de.veraimt.litelocker.protection.ProtectableContainer;
+import de.veraimt.litelocker.protection.protectable.ProtectableContainer;
 import net.minecraft.core.Direction;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;

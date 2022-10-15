@@ -20,7 +20,7 @@
     "containers.base.RandomizableContainerBlockEntityMixin",
     "test.BlockBehaviourMixin",
     "test.BlockStateMixin",
-    "test.ServerPlayerGameModeMixin",
+    "ServerPlayerGameModeMixin",
     "test.ServerPlayerMixin",
     "test.SignBlockMixin"
   ],

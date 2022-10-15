@@ -1,8 +1,8 @@
 package de.veraimt.litelocker.mixin.containers;
 
 import de.veraimt.litelocker.mixin.containers.base.RandomizableContainerBlockEntityMixin;
-import de.veraimt.litelocker.protection.ProtectableContainer;
-import de.veraimt.litelocker.protection.Protector;
+import de.veraimt.litelocker.protection.protectable.ProtectableContainer;
+import de.veraimt.litelocker.protection.protector.Protector;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.CompoundContainer;
 import net.minecraft.world.Container;

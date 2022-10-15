@@ -1,5 +1,7 @@
 package de.veraimt.litelocker.protection;
 
+import de.veraimt.litelocker.protection.protectable.ProtectableBlockContainer;
+import de.veraimt.litelocker.protection.protector.Protector;
 import de.veraimt.litelocker.utils.MixinAccessible;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;

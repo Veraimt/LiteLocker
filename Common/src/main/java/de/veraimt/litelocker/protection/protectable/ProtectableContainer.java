@@ -1,5 +1,6 @@
-package de.veraimt.litelocker.protection;
+package de.veraimt.litelocker.protection.protectable;
 
+import de.veraimt.litelocker.protection.protector.Protector;
 import net.minecraft.world.entity.player.Player;
 
 import javax.annotation.Nullable;
