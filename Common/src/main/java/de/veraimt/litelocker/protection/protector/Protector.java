@@ -11,7 +11,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import javax.annotation.Nullable;
@@ -59,9 +58,6 @@ public interface Protector<T extends BlockEntity> extends BlockEntityProvider<T>
     }
 
     default void activate() {
-        System.out.println("Activating protection for " + getAttachedContainer());
-
-
         var container = getAttachedContainer();
 
         if (container != null) {
@@ -71,11 +67,9 @@ public interface Protector<T extends BlockEntity> extends BlockEntityProvider<T>
     }
 
     default void deactivate() {
-        System.out.println("!call deactivate");
         var container = getAttachedContainer();
 
         if (container != null) {
-            System.out.println("do remove");
             container.removeProtector(this);
         }
     }
@@ -96,7 +90,6 @@ public interface Protector<T extends BlockEntity> extends BlockEntityProvider<T>
      * @param compoundTag the CompoundTag to which this Protectors data will be saved
      */
     default void saveNbt(CompoundTag compoundTag) {
-        System.out.println("Save Nbt");
         CompoundTag data = new CompoundTag();
 
         CompoundTag usersTag = new CompoundTag();
@@ -121,7 +114,6 @@ public interface Protector<T extends BlockEntity> extends BlockEntityProvider<T>
      * @param compoundTag the CompoundTag from which this Protectors data will be loaded
      */
     default void loadNbt(CompoundTag compoundTag) {
-        System.out.println("Load Nbt");
         CompoundTag data = compoundTag.getCompound(NbtKeys.DATA);
 
         CompoundTag userTag = data.getCompound(NbtKeys.USERS);
@@ -147,14 +139,6 @@ public interface Protector<T extends BlockEntity> extends BlockEntityProvider<T>
     }
 
     default void removeUser(int i) {
-        Level world = getBlockEntity().getLevel();
-        ProtectableContainer container = getAttachedContainer();
-        if (container != null) {
-            Player player = world.getServer().getPlayerList().getPlayer(getUsers()[i]);
-            if (player != null) {
-                System.out.println("!!removed Player: " + player.getName() + " from Protector: " + this);
-            }
-        }
         getUsers()[i] = null;
     }
 

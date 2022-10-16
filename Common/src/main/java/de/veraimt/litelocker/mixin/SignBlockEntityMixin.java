@@ -20,7 +20,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.Arrays;
 import java.util.UUID;
 
 @Mixin(SignBlockEntity.class)
@@ -41,7 +40,6 @@ public abstract class SignBlockEntityMixin extends BlockEntity implements Protec
 
     @Inject(method = "executeClickCommands", at = @At("HEAD"))
     public void onClick(ServerPlayer player, CallbackInfoReturnable<Boolean> cir) {
-        System.out.println("Sign onClick");
         if (canAccess(player)) {
             setEditable(true);
             player.openTextEdit(getBlockEntity());
@@ -51,8 +49,6 @@ public abstract class SignBlockEntityMixin extends BlockEntity implements Protec
 
     @Override
     public void setChanged() {
-        System.out.println("Method Call: "+ getClass().getName() +"#setChanged");
-        System.out.println("STACKTRACE" + Arrays.toString(Thread.currentThread().getStackTrace()));
         onChanged();
         super.setChanged();
     }

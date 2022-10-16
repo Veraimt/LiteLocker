@@ -32,7 +32,6 @@ public class SignManager {
         } else {
             protectorSign.getBlockEntity().setMessage(0, new TextComponent(ProtectorSign.Tag.PRIVATE.tag));
             protectorSign.getBlockEntity().setMessage(1, player.getName());
-            System.out.println("Auto filled");
             return true;
         }
     }

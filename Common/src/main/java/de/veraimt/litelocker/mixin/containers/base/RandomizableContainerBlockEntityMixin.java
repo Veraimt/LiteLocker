@@ -11,8 +11,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.Arrays;
-
 @Mixin(RandomizableContainerBlockEntity.class)
 public abstract class RandomizableContainerBlockEntityMixin extends BaseContainerBlockEntityMixin implements ProtectableContainer {
 
@@ -22,13 +20,6 @@ public abstract class RandomizableContainerBlockEntityMixin extends BaseContaine
 
     @Inject(method = "canOpen", at = @At("RETURN"), cancellable = true)
     public void canOpen(Player player, CallbackInfoReturnable<Boolean> cir) {
-        //TODO remove Debug
-        System.out.println("Method Call: "+ getClass().getName() +"#canOpen");
-        System.out.println("STACKTRACE " + Arrays.toString(Thread.currentThread().getStackTrace()));
-
-
-
-
         cir.setReturnValue(cir.getReturnValue() && canAccess(player));
 
     }

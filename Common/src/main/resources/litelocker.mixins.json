@@ -16,11 +16,7 @@
     "containers.base.CompoundContainerMixin",
     "containers.base.ContainerBlockEntityMixin",
     "containers.base.RandomizableContainerBlockEntityMixin",
-    "test.BlockBehaviourMixin",
-    "test.BlockStateMixin",
     "ServerPlayerGameModeMixin",
-    "test.ServerPlayerMixin",
-    "test.SignBlockMixin"
   ],
   "injectors": {
     "defaultRequire": 1

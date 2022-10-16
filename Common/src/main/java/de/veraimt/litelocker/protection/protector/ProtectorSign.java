@@ -42,7 +42,6 @@ public interface ProtectorSign extends Protector<SignBlockEntity> {
         Tag tag = Tag.fromString(firstLine.getContents());
 
         if (tag == null) {
-            System.out.println("wrong tag");
             return false;
         }
 
@@ -51,13 +50,11 @@ public interface ProtectorSign extends Protector<SignBlockEntity> {
 
     @Override
     default void activate() {
-        System.out.println("Activate");
         Component firstLine = getBlockEntity().getMessage(0, false);
 
         Tag tag = Tag.fromString(firstLine.getContents());
 
         if (tag == null) {
-            System.out.println("!wrong tag");
             Protector.super.deactivate();
             return;
         }
@@ -66,12 +63,10 @@ public interface ProtectorSign extends Protector<SignBlockEntity> {
         ProtectableBlockContainer container = getAttachedContainer();
 
         if (container == null) {
-            System.out.println("not a container!");
             return;
         }
 
         if (container.hasProtector() && !container.hasProtector(this)) {
-            System.out.println("####asdsadasdsasd");
             if (!tag.equals(Tag.MORE_USERS)) {
                 firstLine = Component.nullToEmpty(Tag.MORE_USERS.tag);
             }
@@ -83,8 +78,6 @@ public interface ProtectorSign extends Protector<SignBlockEntity> {
             //Getting Player from Server that the world runs on
             Player player = world.getServer().getPlayerList().getPlayerByName(
                     message.getContents());
-            System.out.println("message: " + message);
-            System.out.println("found Player: " + (player == null ? null : player.getName()));
             if (player != null) {
                 getUsers()[i-1] = player.getUUID();
 
