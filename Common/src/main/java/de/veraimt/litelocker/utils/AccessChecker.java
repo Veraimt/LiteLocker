@@ -18,4 +18,12 @@ public class AccessChecker {
         }
         return true;
     }
+
+    public static boolean canLock(BlockGetter levelLike, BlockPos blockPos, Player player) {
+        var blockEntity = levelLike.getBlockEntity(blockPos);
+        if (blockEntity instanceof Protectable protectable) {
+            return protectable.canAccess(player);
+        }
+        return false;
+    }
 }

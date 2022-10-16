@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class ItemStackMixin {
 
     @Inject(method = "useOn", at = @At("HEAD"))
-    public void useItemOn(UseOnContext $$0, CallbackInfoReturnable<InteractionResult> cir) {
+    public void useOn(UseOnContext useOnContext, CallbackInfoReturnable<InteractionResult> cir) {
         //PREV: ServerPlayerGameMode#useItemOn
         //Called when Player uses this item on block
         System.out.println("Method Call: "+ getClass().getName() +"#useOn");

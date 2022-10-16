@@ -49,6 +49,10 @@ public interface Protector<T extends BlockEntity> extends BlockEntityProvider<T>
     }
 
     default boolean isValid() {
+        return isAttachedContainerValid();
+    }
+
+    default boolean isAttachedContainerValid() {
         var attachedBlock = getAttachedBlock();
         return !ProtectableBlockRegistry.INSTANCE.isExcluded(attachedBlock.blockState().getBlock()) &&
                 getAttachedContainer() != null;

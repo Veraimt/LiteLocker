@@ -1,4 +1,4 @@
-package de.veraimt.litelocker.utils;
+package de.veraimt.litelocker.protection.protector.autofill;
 
 import de.veraimt.litelocker.protection.protectable.ProtectableContainer;
 import de.veraimt.litelocker.protection.protector.ProtectorSign;
@@ -16,7 +16,7 @@ public class SignManager {
     }
 
     public boolean isValid() {
-        return protectorSign.isValid();
+        return protectorSign.isAttachedContainerValid();
     }
 
     public boolean tryAutoFill(Player player) {

@@ -3,14 +3,13 @@ package de.veraimt.litelocker.mixin;
 import de.veraimt.litelocker.LiteLocker;
 import de.veraimt.litelocker.protection.protector.ProtectorItem;
 import de.veraimt.litelocker.protection.protector.ProtectorSign;
-import de.veraimt.litelocker.utils.SignManager;
+import de.veraimt.litelocker.protection.protector.autofill.SignManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SignItem;
 import net.minecraft.world.item.StandingAndWallBlockItem;
-import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -54,7 +53,7 @@ public abstract class SignItemMixin extends StandingAndWallBlockItem implements 
 
         SignManager signManager = new SignManager(protectorSign);
 
-        if (!protectorSign.isValid()) {
+        if (!signManager.isValid()) {
             System.out.println("not valid!");
             return;
         }
@@ -74,15 +73,6 @@ public abstract class SignItemMixin extends StandingAndWallBlockItem implements 
     public InteractionResult useOn(UseOnContext useOnContext) {
         System.out.println("Method Call: "+ getClass().getName() +"#useOn");
 
-        //BlockState blockState = useOnContext.getLevel().getBlockState(useOnContext.getClickedPos());
-        //System.out.println("Using sign on " + blockState.getBlock());
-
-
         return super.useOn(useOnContext);
-    }
-
-    @Override
-    public InteractionResult place(BlockPlaceContext $$0) {
-        return super.place($$0);
     }
 }
