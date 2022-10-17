@@ -25,11 +25,11 @@ ${description}
     mandatory=true
     versionRange="${forge_version_range}"
     ordering="NONE"
-    side="BOTH"
+    side="SERVER"
 
 [[dependencies.litelocker]]
     modId="minecraft"
     mandatory=true
     # This version range declares a minimum of the current minecraft version up to but not including the next major version
     versionRange="${forge_mc_version_range}"
-    side="BOTH"
+    side="SERVER"

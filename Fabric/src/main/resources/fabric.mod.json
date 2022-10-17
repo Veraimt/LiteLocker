@@ -17,7 +17,7 @@
     "license": "${license}",
     "icon": "assets/${mod_id}/icon.png",
   
-    "environment": "*",
+    "environment": "server",
     "entrypoints": {
       "main": [
         "de.veraimt.litelocker.LiteLockerFabric"
