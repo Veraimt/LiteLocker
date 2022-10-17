@@ -6,7 +6,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.block.WallSignBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -90,7 +89,7 @@ public abstract class SignBlockEntityMixin extends BlockEntity implements Protec
 
     @Override
     public void setMain() {
-        setMessage(0, new TextComponent(Tag.PRIVATE.tag));
+        setMessage(0, Component.literal(Tag.PRIVATE.tag));
         setChanged();
         updateWorld();
     }

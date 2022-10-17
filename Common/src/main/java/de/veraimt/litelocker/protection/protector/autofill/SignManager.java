@@ -2,7 +2,7 @@ package de.veraimt.litelocker.protection.protector.autofill;
 
 import de.veraimt.litelocker.protection.protectable.ProtectableContainer;
 import de.veraimt.litelocker.protection.protector.ProtectorSign;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
@@ -30,7 +30,7 @@ public class SignManager {
         if (container.hasProtector()) {
             return false;
         } else {
-            protectorSign.getBlockEntity().setMessage(0, new TextComponent(ProtectorSign.Tag.PRIVATE.tag));
+            protectorSign.getBlockEntity().setMessage(0, Component.literal(ProtectorSign.Tag.PRIVATE.tag));
             protectorSign.getBlockEntity().setMessage(1, player.getName());
             return true;
         }
