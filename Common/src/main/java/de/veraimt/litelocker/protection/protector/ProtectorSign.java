@@ -1,11 +1,13 @@
 package de.veraimt.litelocker.protection.protector;
 
+import com.mojang.authlib.GameProfile;
 import de.veraimt.litelocker.protection.protectable.ProtectableBlockContainer;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.SignBlockEntity;
+
+import java.util.UUID;
 
 public interface ProtectorSign extends Protector<SignBlockEntity> {
 
@@ -48,6 +50,7 @@ public interface ProtectorSign extends Protector<SignBlockEntity> {
         return Protector.super.isValid();
     }
 
+    @SuppressWarnings("ConstantConditions")
     @Override
     default void activate() {
         Component firstLine = getBlockEntity().getMessage(0, false);
@@ -59,7 +62,7 @@ public interface ProtectorSign extends Protector<SignBlockEntity> {
             return;
         }
 
-        Level world = getBlockEntity().getLevel();
+        final Level world = getBlockEntity().getLevel();
         ProtectableBlockContainer container = getAttachedContainer();
 
         if (container == null) {
@@ -71,26 +74,34 @@ public interface ProtectorSign extends Protector<SignBlockEntity> {
                 firstLine = Component.nullToEmpty(Tag.MORE_USERS.tag);
             }
         }
+        new Thread(() -> {
+            for (int i = 1; i < SignBlockEntity.LINES; i++) {
+                Component message = getBlockEntity().getMessage(i, false);
 
-        for (int i = 1; i < SignBlockEntity.LINES; i++) {
-            Component message = getBlockEntity().getMessage(i, false);
+                //Getting Player UUID from Server that the world runs on
+                final UUID playerUUID = world.getServer().getProfileCache().get(message.getContents())
+                        .map(GameProfile::getId).orElse(null);
 
-            //Getting Player from Server that the world runs on
-            Player player = world.getServer().getPlayerList().getPlayerByName(
-                    message.getContents());
-            if (player != null) {
-                getUsers()[i-1] = player.getUUID();
+                if (playerUUID != null) {
+                    getUsers()[i-1] = playerUUID;
 
-                getBlockEntity().setMessage(i, message.copy().withStyle(ChatFormatting.ITALIC));
-            } else {
-                removeUser(i-1);
+                    getBlockEntity().setMessage(i, message.copy().withStyle(ChatFormatting.ITALIC));
+                } else {
+                    removeUser(i-1);
+                }
             }
-
-        }
+            updateWorld();
+        }).start();
 
         Protector.super.activate();
         //Turning first line bold as indicator that the Protection is active
         getBlockEntity().setMessage(0, firstLine.copy().withStyle(ChatFormatting.BOLD));
         //getBlockEntity().getLevel().sendBlockUpdated(getBlockEntity().getBlockPos(), getBlockEntity().getBlockState(), getBlockEntity().getBlockState(), 3);
+    }
+
+    @SuppressWarnings("ConstantConditions")
+    default void updateWorld() {
+        var blockEntity = getBlockEntity();
+        blockEntity.getLevel().sendBlockUpdated(blockEntity.getBlockPos(), blockEntity.getBlockState(), blockEntity.getBlockState(), 3);
     }
 }

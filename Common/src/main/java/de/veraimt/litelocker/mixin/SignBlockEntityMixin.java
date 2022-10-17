@@ -92,7 +92,7 @@ public abstract class SignBlockEntityMixin extends BlockEntity implements Protec
     public void setMain() {
         setMessage(0, new TextComponent(Tag.PRIVATE.tag));
         setChanged();
-        getLevel().sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 3);
+        updateWorld();
     }
 
     @Override
