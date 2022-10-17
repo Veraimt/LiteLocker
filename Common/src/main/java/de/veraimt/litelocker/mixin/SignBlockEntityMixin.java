@@ -40,7 +40,7 @@ public abstract class SignBlockEntityMixin extends BlockEntity implements Protec
 
     @Inject(method = "executeClickCommands", at = @At("HEAD"))
     public void onClick(ServerPlayer player, CallbackInfoReturnable<Boolean> cir) {
-        if (canAccess(player)) {
+        if (canAccess(player) && isValid()) {
             setEditable(true);
             player.openTextEdit(getBlockEntity());
         }
