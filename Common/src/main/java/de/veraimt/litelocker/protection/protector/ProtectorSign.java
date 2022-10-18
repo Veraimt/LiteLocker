@@ -34,14 +34,14 @@ public interface ProtectorSign extends Protector<SignBlockEntity> {
 
     @Override
     default boolean isMain() {
-        return getBlockEntity().getMessage(0, false).getContents().equals(Tag.PRIVATE.tag);
+        return Tag.PRIVATE.tag.equals(getBlockEntity().getMessage(0, false).getString());
     }
 
     @Override
     default boolean isValid() {
-        Component firstLine = getBlockEntity().getMessage(0, false);
+        var firstLine = getBlockEntity().getMessage(0, false);
 
-        Tag tag = Tag.fromString(firstLine.getContents());
+        Tag tag = Tag.fromString(firstLine.getString());
 
         if (tag == null) {
             return false;
@@ -55,7 +55,7 @@ public interface ProtectorSign extends Protector<SignBlockEntity> {
     default void activate() {
         Component firstLine = getBlockEntity().getMessage(0, false);
 
-        Tag tag = Tag.fromString(firstLine.getContents());
+        Tag tag = Tag.fromString(firstLine.getString());
 
         if (tag == null) {
             Protector.super.deactivate();
@@ -79,7 +79,7 @@ public interface ProtectorSign extends Protector<SignBlockEntity> {
                 Component message = getBlockEntity().getMessage(i, false);
 
                 //Getting Player UUID from Server that the world runs on
-                final UUID playerUUID = world.getServer().getProfileCache().get(message.getContents())
+                final UUID playerUUID = world.getServer().getProfileCache().get(message.getString())
                         .map(GameProfile::getId).orElse(null);
 
                 if (playerUUID != null) {

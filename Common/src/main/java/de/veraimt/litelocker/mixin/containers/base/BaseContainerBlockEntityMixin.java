@@ -24,7 +24,6 @@ public abstract class BaseContainerBlockEntityMixin extends BlockEntity implemen
 
     @Override
     public void setRemoved() {
-        set(null);
         super.setRemoved();
     }
 
@@ -39,7 +38,8 @@ public abstract class BaseContainerBlockEntityMixin extends BlockEntity implemen
     @Override
     public Protection get() {
         if (protection == null)
-            protection = Protection.find(this);
+            if (!isRemoved())
+                protection = Protection.find(this);
         return protection;
     }
 

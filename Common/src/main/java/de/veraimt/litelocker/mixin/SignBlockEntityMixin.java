@@ -1,18 +1,19 @@
 package de.veraimt.litelocker.mixin;
 
 import de.veraimt.litelocker.entities.BlockPosState;
+import de.veraimt.litelocker.protection.protectable.ProtectableBlockContainer;
 import de.veraimt.litelocker.protection.protector.ProtectorSign;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.block.WallSignBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.entity.SignBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -26,6 +27,7 @@ import java.util.UUID;
 public abstract class SignBlockEntityMixin extends BlockEntity implements ProtectorSign {
 
     private static final byte MAX_USERS = SignBlockEntity.LINES -1;
+    private ProtectableBlockContainer attachedContainer;
 
     private UUID[] playerUUIDs = new UUID[MAX_USERS];
 
@@ -56,6 +58,7 @@ public abstract class SignBlockEntityMixin extends BlockEntity implements Protec
     @Override
     public void setRemoved() {
         onRemoved();
+        attachedContainer = null;
         super.setRemoved();
     }
 
@@ -90,7 +93,7 @@ public abstract class SignBlockEntityMixin extends BlockEntity implements Protec
 
     @Override
     public void setMain() {
-        setMessage(0, new TextComponent(Tag.PRIVATE.tag));
+        setMessage(0, Component.nullToEmpty(Tag.PRIVATE.tag));
         setChanged();
         updateWorld();
     }
@@ -107,5 +110,18 @@ public abstract class SignBlockEntityMixin extends BlockEntity implements Protec
         BlockPos targetPos = pos.relative(facing, -1);
 
         return new BlockPosState(targetPos, getLevel().getBlockState(targetPos));
+    }
+
+    @Nullable
+    @Override
+    public ProtectableBlockContainer getAttachedContainer() {
+        if (attachedContainer == null)
+            attachedContainer = getAttachedContainerInternal();
+        return attachedContainer;
+    }
+
+    private ProtectableBlockContainer getAttachedContainerInternal() {
+        var attachedBlockEntity = getBlockEntity().getLevel().getBlockEntity(getAttachedBlock().blockPos());
+        return attachedBlockEntity instanceof ProtectableBlockContainer ? ((ProtectableBlockContainer) attachedBlockEntity) : null;
     }
 }
