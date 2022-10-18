@@ -42,10 +42,7 @@ public interface Protector<T extends BlockEntity> extends BlockEntityProvider<T>
     BlockPosState getAttachedBlock();
 
     @Nullable
-    default ProtectableBlockContainer getAttachedContainer() {
-        var attachedBlockEntity = getBlockEntity().getLevel().getBlockEntity(getAttachedBlock().blockPos());
-        return attachedBlockEntity instanceof ProtectableBlockContainer ? ((ProtectableBlockContainer) attachedBlockEntity) : null;
-    }
+    ProtectableBlockContainer getAttachedContainer();
 
     default boolean isValid() {
         return isAttachedContainerValid();

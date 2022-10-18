@@ -1,7 +1,7 @@
 package de.veraimt.litelocker.mixin.containers.base;
 
-import de.veraimt.litelocker.protection.protectable.ProtectableBlockContainer;
 import de.veraimt.litelocker.protection.Protection;
+import de.veraimt.litelocker.protection.protectable.ProtectableBlockContainer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -24,7 +24,6 @@ public abstract class BaseContainerBlockEntityMixin extends BlockEntity implemen
 
     @Override
     public void setRemoved() {
-        set(null);
         super.setRemoved();
     }
 
@@ -39,7 +38,8 @@ public abstract class BaseContainerBlockEntityMixin extends BlockEntity implemen
     @Override
     public Protection get() {
         if (protection == null)
-            protection = Protection.find(this);
+            if (!isRemoved())
+                protection = Protection.find(this);
         return protection;
     }
 

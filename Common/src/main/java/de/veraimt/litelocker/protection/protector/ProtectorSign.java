@@ -34,7 +34,7 @@ public interface ProtectorSign extends Protector<SignBlockEntity> {
 
     @Override
     default boolean isMain() {
-        return getBlockEntity().getMessage(0, false).getContents().equals(Tag.PRIVATE.tag);
+        return Tag.PRIVATE.tag.equalsIgnoreCase(getBlockEntity().getMessage(0, false).getString());
     }
 
     @Override
