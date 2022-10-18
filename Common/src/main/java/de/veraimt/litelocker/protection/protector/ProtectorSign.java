@@ -1,6 +1,5 @@
 package de.veraimt.litelocker.protection.protector;
 
-import com.mojang.authlib.GameProfile;
 import de.veraimt.litelocker.protection.protectable.ProtectableBlockContainer;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -71,21 +70,23 @@ public interface ProtectorSign extends Protector<SignBlockEntity> {
 
         if (container.hasProtector() && !container.hasProtector(this)) {
             if (!tag.equals(Tag.MORE_USERS)) {
-                firstLine = Component.nullToEmpty(Tag.MORE_USERS.tag);
+                tag = Tag.MORE_USERS;
             }
         }
         new Thread(() -> {
             for (int i = 1; i < SignBlockEntity.LINES; i++) {
                 Component message = getBlockEntity().getMessage(i, false);
 
-                //Getting Player UUID from Server that the world runs on
-                final UUID playerUUID = world.getServer().getProfileCache().get(message.getString())
-                        .map(GameProfile::getId).orElse(null);
+                var gameProfile = world.getServer().getProfileCache().get(message.getString());
 
-                if (playerUUID != null) {
+                if (gameProfile.isPresent()) {
+                    final UUID playerUUID = gameProfile.get().getId();
+
                     getUsers()[i-1] = playerUUID;
 
-                    getBlockEntity().setMessage(i, message.copy().withStyle(ChatFormatting.ITALIC));
+                    getBlockEntity().setMessage(i, Component.nullToEmpty(gameProfile.get().getName())
+                            .copy().withStyle(ChatFormatting.ITALIC)
+                    );
                 } else {
                     removeUser(i-1);
                 }
@@ -95,6 +96,7 @@ public interface ProtectorSign extends Protector<SignBlockEntity> {
 
         Protector.super.activate();
         //Turning first line bold as indicator that the Protection is active
+        firstLine = Component.nullToEmpty(tag.tag);
         getBlockEntity().setMessage(0, firstLine.copy().withStyle(ChatFormatting.BOLD));
         //getBlockEntity().getLevel().sendBlockUpdated(getBlockEntity().getBlockPos(), getBlockEntity().getBlockState(), getBlockEntity().getBlockState(), 3);
     }
