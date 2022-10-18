@@ -93,7 +93,7 @@ public abstract class SignBlockEntityMixin extends BlockEntity implements Protec
 
     @Override
     public void setMain() {
-        setMessage(0, Component.literal(Tag.PRIVATE.tag));
+        setMessage(0, Component.nullToEmpty(Tag.PRIVATE.tag));
         setChanged();
         updateWorld();
     }

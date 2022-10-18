@@ -30,7 +30,7 @@ public class SignManager {
         if (container.hasProtector()) {
             return false;
         } else {
-            protectorSign.getBlockEntity().setMessage(0, Component.literal(ProtectorSign.Tag.PRIVATE.tag));
+            protectorSign.getBlockEntity().setMessage(0, Component.nullToEmpty(ProtectorSign.Tag.PRIVATE.tag));
             protectorSign.getBlockEntity().setMessage(1, player.getName());
             return true;
         }
