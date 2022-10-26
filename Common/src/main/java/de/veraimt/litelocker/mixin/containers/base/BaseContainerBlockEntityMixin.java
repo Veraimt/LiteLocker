@@ -2,6 +2,7 @@ package de.veraimt.litelocker.mixin.containers.base;
 
 import de.veraimt.litelocker.protection.Protection;
 import de.veraimt.litelocker.protection.protectable.ProtectableBlockContainer;
+import de.veraimt.litelocker.utils.BlockEntityExtension;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -9,8 +10,10 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import org.spongepowered.asm.mixin.Mixin;
 
+import javax.annotation.Nullable;
+
 @Mixin(BaseContainerBlockEntity.class)
-public abstract class BaseContainerBlockEntityMixin extends BlockEntity implements ProtectableBlockContainer {
+public abstract class BaseContainerBlockEntityMixin extends BlockEntity implements ProtectableBlockContainer, BlockEntityExtension {
 
 
     protected Protection protection;
@@ -40,6 +43,12 @@ public abstract class BaseContainerBlockEntityMixin extends BlockEntity implemen
         if (protection == null)
             if (!isRemoved())
                 protection = Protection.find(this);
+        return protection;
+    }
+
+    @Nullable
+    @Override
+    public Protection getDirect() {
         return protection;
     }
 

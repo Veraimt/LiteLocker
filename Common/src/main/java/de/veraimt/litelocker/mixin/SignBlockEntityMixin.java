@@ -3,6 +3,7 @@ package de.veraimt.litelocker.mixin;
 import de.veraimt.litelocker.entities.BlockPosState;
 import de.veraimt.litelocker.protection.protectable.ProtectableBlockContainer;
 import de.veraimt.litelocker.protection.protector.ProtectorSign;
+import de.veraimt.litelocker.utils.BlockEntityExtension;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -24,10 +25,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.UUID;
 
 @Mixin(SignBlockEntity.class)
-public abstract class SignBlockEntityMixin extends BlockEntity implements ProtectorSign {
+public abstract class SignBlockEntityMixin extends BlockEntity implements ProtectorSign, BlockEntityExtension {
 
     private static final byte MAX_USERS = SignBlockEntity.LINES -1;
     private ProtectableBlockContainer attachedContainer;
+    private boolean unloaded = false;
 
     private UUID[] playerUUIDs = new UUID[MAX_USERS];
 
@@ -57,9 +59,11 @@ public abstract class SignBlockEntityMixin extends BlockEntity implements Protec
 
     @Override
     public void setRemoved() {
+        super.setRemoved();
+        if (unloaded)
+            return;
         onRemoved();
         attachedContainer = null;
-        super.setRemoved();
     }
 
     @Inject(method = "saveAdditional", at = @At("HEAD"))
@@ -73,6 +77,12 @@ public abstract class SignBlockEntityMixin extends BlockEntity implements Protec
     }
 
     //Interface Overrides
+
+    @Override
+    public void onUnload() {
+        unloaded = true;
+    }
+
     @Override
     public SignBlockEntity getBlockEntity() {
         return (SignBlockEntity) (Object) this;
@@ -93,6 +103,8 @@ public abstract class SignBlockEntityMixin extends BlockEntity implements Protec
 
     @Override
     public void setMain() {
+        if (isRemoved())
+            return;
         setMessage(0, Component.nullToEmpty(Tag.PRIVATE.tag));
         setChanged();
         updateWorld();

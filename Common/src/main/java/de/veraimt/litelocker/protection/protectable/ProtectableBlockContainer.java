@@ -14,9 +14,12 @@ public interface ProtectableBlockContainer extends ProtectableContainer, Protect
     }
 
     default void removeProtector(Protector<?> protector) {
-        get().removeProtector(protector);
+        var protection = getDirect();
+        if (protection == null)
+            return;
+        protection.removeProtector(protector);
         if (protector.isMain())
-            get().protectors().stream().findAny().ifPresent(Protector::setMain);
+            protection.protectors().stream().findAny().ifPresent(Protector::setMain);
     }
 
     default boolean hasProtector() {

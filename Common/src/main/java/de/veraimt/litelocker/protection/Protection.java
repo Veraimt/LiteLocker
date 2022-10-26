@@ -2,7 +2,7 @@ package de.veraimt.litelocker.protection;
 
 import de.veraimt.litelocker.protection.protectable.ProtectableBlockContainer;
 import de.veraimt.litelocker.protection.protector.Protector;
-import de.veraimt.litelocker.utils.MixinAccessible;
+import de.veraimt.litelocker.utils.MixinDirectAccessible;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -82,5 +82,5 @@ public class Protection {
                 '}';
     }
 
-    public interface Access extends MixinAccessible<Protection> {}
+    public interface Access extends MixinDirectAccessible<Protection> {}
 }

@@ -16,13 +16,18 @@ import java.util.UUID;
 
 @Mixin(ChestBlockEntity.class)
 public class ChestBlockEntityMixin extends RandomizableContainerBlockEntityMixin {
+    private Container container;
 
     protected ChestBlockEntityMixin(BlockEntityType<?> $$0, BlockPos $$1, BlockState $$2) {
         super($$0, $$1, $$2);
     }
 
     private Container getContainer() {
-        return ChestBlock.getContainer(((ChestBlock) getBlockState().getBlock()), getBlockState(), getLevel(), getBlockPos(), false);
+        var tmp = ChestBlock.getContainer(((ChestBlock) getBlockState().getBlock()), getBlockState(), getLevel(), getBlockPos(), false);
+        if (tmp != null)
+            container = tmp;
+        return container;
+
     }
 
 
