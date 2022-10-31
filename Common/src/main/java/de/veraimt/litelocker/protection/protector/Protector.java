@@ -110,10 +110,13 @@ public interface Protector<T extends BlockEntity> extends BlockEntityProvider<T>
      * Loads this Protectors data from the given CompoundTag
      * @param compoundTag the CompoundTag from which this Protectors data will be loaded
      */
-    default void loadNbt(CompoundTag compoundTag) {
+    default boolean loadNbt(CompoundTag compoundTag) {
         CompoundTag data = compoundTag.getCompound(NbtKeys.DATA);
 
         CompoundTag userTag = data.getCompound(NbtKeys.USERS);
+
+        if (userTag.isEmpty())
+            return false;
 
 
         for (int i = 0; i < getUsers().length; i++) {
@@ -121,6 +124,7 @@ public interface Protector<T extends BlockEntity> extends BlockEntityProvider<T>
             if (tag != null)
                 getUsers()[i] = NbtUtils.loadUUID(tag);
         }
+        return true;
     }
 
     default boolean hasUser(UUID playerUUID) {

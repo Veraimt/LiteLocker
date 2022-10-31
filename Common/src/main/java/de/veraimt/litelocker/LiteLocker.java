@@ -3,6 +3,7 @@ package de.veraimt.litelocker;
 import de.veraimt.litelocker.config.ConfigLoader;
 import de.veraimt.litelocker.config.LiteLockerConfig;
 import de.veraimt.litelocker.platform.services.IPlatformHelper;
+import net.minecraft.server.MinecraftServer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -15,8 +16,9 @@ public class LiteLocker {
     private static final ConfigLoader CONFIG_LOADER = new ConfigLoader();
 
     public static LiteLockerConfig config;
+    public static MinecraftServer server;
 
-    public static void init() {
+    static void init() {
         LOGGER.info("Loading {} on {} Modding Platform", MOD_NAME, PLATFORM.getPlatformName());
 
         config = CONFIG_LOADER.loadConfig();

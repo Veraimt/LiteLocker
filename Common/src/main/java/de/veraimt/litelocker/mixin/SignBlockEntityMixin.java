@@ -73,7 +73,9 @@ public abstract class SignBlockEntityMixin extends BlockEntity implements Protec
 
     @Inject(method = "load", at = @At("TAIL"))
     public void load(CompoundTag compoundTag, CallbackInfo ci) {
-        loadNbt(compoundTag);
+        if (!loadNbt(compoundTag)) {
+            updateGameProfiles(null);
+        }
     }
 
     //Interface Overrides
@@ -135,5 +137,11 @@ public abstract class SignBlockEntityMixin extends BlockEntity implements Protec
     private ProtectableBlockContainer getAttachedContainerInternal() {
         var attachedBlockEntity = getBlockEntity().getLevel().getBlockEntity(getAttachedBlock().blockPos());
         return attachedBlockEntity instanceof ProtectableBlockContainer ? ((ProtectableBlockContainer) attachedBlockEntity) : null;
+    }
+
+    @Override
+    public void updateWorld() {
+        getLevel().sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 3);
+        super.setChanged();
     }
 }
