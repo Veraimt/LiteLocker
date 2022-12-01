@@ -135,6 +135,8 @@ public abstract class SignBlockEntityMixin extends BlockEntity implements Protec
     }
 
     private ProtectableBlockContainer getAttachedContainerInternal() {
+        if (getBlockEntity().getLevel() == null)
+            return null;
         var attachedBlockEntity = getBlockEntity().getLevel().getBlockEntity(getAttachedBlock().blockPos());
         return attachedBlockEntity instanceof ProtectableBlockContainer ? ((ProtectableBlockContainer) attachedBlockEntity) : null;
     }
