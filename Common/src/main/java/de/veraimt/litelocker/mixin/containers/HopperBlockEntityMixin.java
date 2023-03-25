@@ -14,7 +14,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class HopperBlockEntityMixin {
 
     @Inject(method = "canTakeItemFromContainer", at = @At("RETURN"), cancellable = true)
-    private static void canTakeItemFromContainer(Container container, ItemStack $$1, int $$2, Direction $$3, CallbackInfoReturnable<Boolean> cir) {
+    private static void canTakeItemFromContainer(Container hopper, Container container,
+                                                 ItemStack $$2, int $$3, Direction $$4, CallbackInfoReturnable<Boolean> cir) {
         if (container instanceof ProtectableContainer c)
             cir.setReturnValue(cir.getReturnValue() && !c.hasProtector());
     }

@@ -5,6 +5,7 @@ import de.veraimt.litelocker.protection.protector.ProtectorItem;
 import de.veraimt.litelocker.protection.protector.ProtectorSign;
 import de.veraimt.litelocker.protection.protector.autofill.SignManager;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SignItem;
@@ -19,12 +20,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(SignItem.class)
 public abstract class SignItemMixin extends StandingAndWallBlockItem implements ProtectorItem {
+    public SignItemMixin(Block $$0, Block $$1, Properties $$2, Direction $$3) {
+        super($$0, $$1, $$2, $$3);
+    }
 
     //Used for auto-locking
 
-    public SignItemMixin(Block $$0, Block $$1, Properties $$2) {
-        super($$0, $$1, $$2);
-    }
+
 
     //Inject before the Text Edit of the sign is opened
     //Used for Auto Locking

@@ -17,7 +17,8 @@ public class ProtectableBlockRegistry {
         var excludedBlockNames = LiteLocker.config.getExclude();
         for (var blockName : excludedBlockNames) {
             //EXAMPLE: "minecraft:grass_block"
-            excludedBlocks.add(Registry.BLOCK.get(ResourceLocation.tryParse(blockName)));
+            //FIXME
+            //excludedBlocks.add(Registry.BLOCK.get(ResourceLocation.tryParse(blockName)));
         }
     }
 
