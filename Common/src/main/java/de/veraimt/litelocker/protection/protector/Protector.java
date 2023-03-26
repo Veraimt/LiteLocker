@@ -3,7 +3,6 @@ package de.veraimt.litelocker.protection.protector;
 import de.veraimt.litelocker.entities.BlockPosState;
 import de.veraimt.litelocker.protection.protectable.Protectable;
 import de.veraimt.litelocker.protection.protectable.ProtectableBlockContainer;
-import de.veraimt.litelocker.protection.protectable.ProtectableBlockRegistry;
 import de.veraimt.litelocker.protection.protectable.ProtectableContainer;
 import de.veraimt.litelocker.utils.AccessChecker;
 import de.veraimt.litelocker.utils.BlockEntityProvider;
@@ -49,9 +48,7 @@ public interface Protector<T extends BlockEntity> extends BlockEntityProvider<T>
     }
 
     default boolean isAttachedContainerValid() {
-        var attachedBlock = getAttachedBlock();
-        return !ProtectableBlockRegistry.INSTANCE.isExcluded(attachedBlock.blockState().getBlock()) &&
-                getAttachedContainer() != null;
+        return getAttachedContainer() != null;
     }
 
     default void activate() {
