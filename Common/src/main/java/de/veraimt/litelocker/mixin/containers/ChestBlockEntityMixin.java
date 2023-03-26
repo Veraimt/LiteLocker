@@ -1,6 +1,6 @@
 package de.veraimt.litelocker.mixin.containers;
 
-import de.veraimt.litelocker.mixin.containers.base.RandomizableContainerBlockEntityMixin;
+import de.veraimt.litelocker.mixin.containers.base.BaseContainerBlockEntityMixin;
 import de.veraimt.litelocker.protection.protectable.ProtectableContainer;
 import de.veraimt.litelocker.protection.protector.Protector;
 import net.minecraft.core.BlockPos;
@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import java.util.UUID;
 
 @Mixin(ChestBlockEntity.class)
-public class ChestBlockEntityMixin extends RandomizableContainerBlockEntityMixin {
+public class ChestBlockEntityMixin extends BaseContainerBlockEntityMixin {
     private Container container;
 
     protected ChestBlockEntityMixin(BlockEntityType<?> $$0, BlockPos $$1, BlockState $$2) {

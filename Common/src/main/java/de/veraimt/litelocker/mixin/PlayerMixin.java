@@ -10,9 +10,14 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import java.util.Arrays;
+
 @Mixin(Player.class)
 public class PlayerMixin {
 
+    /**
+     * @see net.minecraft.server.level.ServerPlayerGameMode#destroyBlock(BlockPos)
+     */
     @Inject(method = "blockActionRestricted", at = @At("HEAD"), cancellable = true)
     public void blockActionRestricted(Level level, BlockPos blockPos, GameType $$2, CallbackInfoReturnable<Boolean> cir) {
 

@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import de.veraimt.litelocker.LiteLocker;
 import de.veraimt.litelocker.platform.services.IPlatformHelper;
-import org.apache.logging.log4j.Level;
 
 import java.io.*;
 
@@ -54,6 +53,7 @@ public class ConfigLoader {
     private void createFileIfNotExists() {
         if (!configFile.exists()) {
             try {
+                //noinspection ResultOfMethodCallIgnored
                 configFile.createNewFile();
             } catch (IOException e) {
                 throw new RuntimeException(e);
