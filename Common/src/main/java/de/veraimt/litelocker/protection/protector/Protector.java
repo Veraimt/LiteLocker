@@ -73,7 +73,10 @@ public interface Protector<T extends BlockEntity> extends BlockEntityProvider<T>
     }
 
     default void onChanged() {
-        if (isValid())
+        //TODO remove
+        var valid = isValid();
+        System.out.println("onChanged, isValid: " + valid);
+        if (valid)
             activate();
         else
             deactivate();
@@ -128,9 +131,7 @@ public interface Protector<T extends BlockEntity> extends BlockEntityProvider<T>
         if (playerUUID == null)
             return false;
         for (var uuid : getUsers()) {
-            if (uuid == null)
-                continue;
-            if (uuid.equals(playerUUID))
+            if (playerUUID.equals(uuid))
                 return true;
         }
         return false;

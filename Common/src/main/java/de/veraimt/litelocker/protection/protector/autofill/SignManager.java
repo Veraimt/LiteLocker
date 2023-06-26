@@ -1,10 +1,13 @@
 package de.veraimt.litelocker.protection.protector.autofill;
 
 import de.veraimt.litelocker.protection.protectable.ProtectableContainer;
-import de.veraimt.litelocker.protection.protector.ProtectorSign;
-import net.minecraft.network.chat.Component;
+import de.veraimt.litelocker.signs.ProtectorSign;
+import net.minecraft.server.network.FilteredText;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class SignManager {
 
@@ -20,8 +23,9 @@ public class SignManager {
     }
 
     public boolean tryAutoFill(Player player) {
+        var signBlockEntity = protectorSign.getBlockEntity();
         BlockEntity blockEntity =
-                protectorSign.getBlockEntity().getLevel().getBlockEntity(protectorSign.getAttachedBlock().blockPos());
+                signBlockEntity.getLevel().getBlockEntity(protectorSign.getAttachedBlock().blockPos());
 
         if (!(blockEntity instanceof  ProtectableContainer container)) {
             return false;
@@ -30,8 +34,12 @@ public class SignManager {
         if (container.hasProtector()) {
             return false;
         } else {
-            protectorSign.getBlockEntity().setMessage(0, Component.nullToEmpty(ProtectorSign.Tag.PRIVATE.tag));
-            protectorSign.getBlockEntity().setMessage(1, player.getName());
+            signBlockEntity.setAllowedPlayerEditor(player.getUUID());
+            signBlockEntity.updateSignText(player, true, List.of(
+                    FilteredText.passThrough(ProtectorSign.Tag.PRIVATE.tag),
+                    FilteredText.passThrough(player.getName().getString())
+            ));
+            System.out.println(Arrays.toString(Thread.currentThread().getStackTrace()));
             return true;
         }
     }

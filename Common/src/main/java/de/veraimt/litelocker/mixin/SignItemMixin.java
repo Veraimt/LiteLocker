@@ -2,8 +2,8 @@ package de.veraimt.litelocker.mixin;
 
 import de.veraimt.litelocker.LiteLocker;
 import de.veraimt.litelocker.protection.protector.ProtectorItem;
-import de.veraimt.litelocker.protection.protector.ProtectorSign;
 import de.veraimt.litelocker.protection.protector.autofill.SignManager;
+import de.veraimt.litelocker.signs.ProtectorSign;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Player;
@@ -32,12 +32,15 @@ public abstract class SignItemMixin extends StandingAndWallBlockItem implements 
     //Used for Auto Locking
     //If not marked as cancellable, throws error
     @SuppressWarnings("CancellableInjectionUsage")
+
     @Inject(method = "updateCustomBlockEntityTag", at = @At(value = "INVOKE",
-            target = "Lnet/minecraft/world/entity/player/Player;openTextEdit(Lnet/minecraft/world/level/block/entity/SignBlockEntity;)V",
+            target = "Lnet/minecraft/world/level/block/SignBlock;openTextEdit(Lnet/minecraft/world/entity/player/Player;Lnet/minecraft/world/level/block/entity/SignBlockEntity;Z)V",
             shift = At.Shift.BEFORE),
             cancellable = true)
     public void updateCustomBlockEntityTag(BlockPos blockPos, Level world, Player player, ItemStack itemStack, BlockState blockState,
                                            CallbackInfoReturnable<Boolean> cir) {
+        //TODO Needs rework
+
         if (!LiteLocker.config.getEnableAutoLocking()) {
             return;
         }
