@@ -1,5 +1,6 @@
 package de.veraimt.litelocker.signs;
 
+import com.mojang.authlib.GameProfile;
 import de.veraimt.litelocker.LiteLocker;
 import de.veraimt.litelocker.protection.protectable.ProtectableBlockContainer;
 import de.veraimt.litelocker.protection.protector.Protector;
@@ -8,6 +9,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.entity.SignBlockEntity;
 import net.minecraft.world.level.block.entity.SignText;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import static de.veraimt.litelocker.LiteLocker.LOGGER;
@@ -105,40 +107,61 @@ public interface ProtectorSign extends Protector<SignBlockEntity> {
             var signText = getBlockEntity().getFrontText();
 
             var messageComponents = signText.getMessages(false);
-            for (int i = 1; i < users.length; i++) {
-                Component message = signText.getMessage(i, false);
-
+            for (int i = 0; i < users.length; i++) {
+                var messageIndex = i+1;
+                Component message = signText.getMessage(messageIndex, false);
                 var messageString = message.getString();
+
+                //OwnerLine: Main sign and first line
+                var preventUserModification = messageIndex == 1 && isMain() && !LiteLocker.config.getCanRemoveSignCreator();
+
+                Optional<GameProfile> gameProfile;
                 if (messageString.isBlank()) {
-                    removeUser(i-1);
-                    continue;
+                    //Message blank
+                    if (preventUserModification) {
+                        //empty Optional to get GameProfile by UUID
+                        gameProfile = Optional.empty();
+                    } else {
+                        removeUser(i);
+                        continue;
+                    }
+                } else {
+                    //Message not blank
+                    //if handling OwnerLine and a UUID is present using empty Optional to get GameProfile by UUID
+                    //otherwise get GameProfile by Name
+
+                    if (preventUserModification && users[i] != null) {
+                        gameProfile = Optional.empty();
+                    } else {
+                        gameProfile = serverProfileCache.get(messageString);
+                    }
                 }
 
                 //GameProfile by Name
-                var gameProfile = serverProfileCache.get(messageString);
-
                 if (gameProfile.isPresent()) {
                     final UUID playerUUID = gameProfile.get().getId();
 
-                    users[i-1] = playerUUID;
-
-                    messageComponents[i] = Component.nullToEmpty(gameProfile.get().getName())
-                            .copy().withStyle(ChatFormatting.ITALIC);
-
+                    users[i] = playerUUID;
                 } else {
                     //GameProfile by UUID
 
-                    gameProfile = serverProfileCache.get(users[i-1]);
+                    gameProfile = serverProfileCache.get(users[i]);
 
-                    if (gameProfile.isPresent()) {
-                        messageComponents[i] = Component.nullToEmpty(gameProfile.get().getName())
-                                .copy().withStyle(ChatFormatting.ITALIC);
-                    } else {
-                        messageComponents[i] = Component.nullToEmpty(messageString)
+                    if (gameProfile.isEmpty()) {
+                        messageComponents[messageIndex] = Component.nullToEmpty(messageString)
                                 .copy().withStyle(ChatFormatting.STRIKETHROUGH);
-                        removeUser(i-1);
+                        removeUser(i);
                     }
                 }
+
+                ChatFormatting[] style;
+                if (preventUserModification) {
+                    style = new ChatFormatting[] {ChatFormatting.ITALIC, ChatFormatting.UNDERLINE};
+                } else {
+                    style = new ChatFormatting[] {ChatFormatting.ITALIC};
+                }
+                messageComponents[messageIndex] = Component.nullToEmpty(gameProfile.get().getName())
+                        .copy().withStyle(style);
             }
 
 
