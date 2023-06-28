@@ -151,6 +151,7 @@ public interface ProtectorSign extends Protector<SignBlockEntity> {
                         messageComponents[messageIndex] = Component.nullToEmpty(messageString)
                                 .copy().withStyle(ChatFormatting.STRIKETHROUGH);
                         removeUser(i);
+                        continue;
                     }
                 }
 
