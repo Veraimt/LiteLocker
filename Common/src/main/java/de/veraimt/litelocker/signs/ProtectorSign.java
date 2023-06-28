@@ -8,8 +8,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.entity.SignBlockEntity;
 import net.minecraft.world.level.block.entity.SignText;
 
-import java.util.Arrays;
 import java.util.UUID;
+
+import static de.veraimt.litelocker.LiteLocker.LOGGER;
 
 public interface ProtectorSign extends Protector<SignBlockEntity> {
 
@@ -34,10 +35,6 @@ public interface ProtectorSign extends Protector<SignBlockEntity> {
     @Override
     SignBlockEntity getBlockEntity();
 
-    @Override
-    default boolean isMain() {
-        return Tag.PRIVATE.tag.equalsIgnoreCase(getBlockEntity().getFrontText().getMessage(0, false).getString());
-    }
 
     @Override
     default boolean isValid() {
@@ -56,13 +53,10 @@ public interface ProtectorSign extends Protector<SignBlockEntity> {
     default void activate() {
         System.out.println("activate");
         Component firstLine = getBlockEntity().getFrontText().getMessage(0, false);
-        System.out.println(firstLine);
-        System.out.println(firstLine.getString());
 
         Tag tag = Tag.fromString(firstLine.getString());
 
         if (tag == null) {
-            System.out.println("tag null");
             Protector.super.deactivate();
             return;
         }
@@ -75,17 +69,15 @@ public interface ProtectorSign extends Protector<SignBlockEntity> {
 
         if (container.hasProtector()) {
             if (!container.hasProtector(this)) {
-                tag = Tag.MORE_USERS;
+                firstLine = Component.nullToEmpty(Tag.MORE_USERS.tag);
+                getBlockEntity().setText(getBlockEntity().getFrontText().setMessage(0, firstLine.copy().withStyle(ChatFormatting.BOLD)), true);
             }
         } else {
-            tag = Tag.PRIVATE;
+            setMain();
         }
         updateGameProfiles(null);
 
         Protector.super.activate();
-        //Turning first line bold as indicator that the Protection is active
-        firstLine = Component.nullToEmpty(tag.tag);
-        setTextOverride(getBlockEntity().getFrontText().setMessage(0, firstLine.copy().withStyle(ChatFormatting.BOLD)), true);
     }
 
     @Override
@@ -96,12 +88,19 @@ public interface ProtectorSign extends Protector<SignBlockEntity> {
         for (int i = 0; i < messages.length; i++) {
             messages[i] = Component.nullToEmpty(messages[i].getString());
         }
-        setTextOverride(new SignText(messages, messages, signText.getColor(), signText.hasGlowingText()), true);
+        getBlockEntity().setText(new SignText(messages, messages, signText.getColor(), signText.hasGlowingText()), true);
     }
 
     default void updateGameProfiles(final Runnable onComplete) {
-        System.out.println(Arrays.toString(Thread.currentThread().getStackTrace()));
+        //System.out.println(Arrays.toString(Thread.currentThread().getStackTrace()));
         new Thread(() -> {
+            var serverProfileCache = LiteLocker.server.getProfileCache();
+
+            if (serverProfileCache == null) {
+                LOGGER.error("ServerProfileCache is null!");
+                return;
+            }
+
             var users = getUsers();
             var signText = getBlockEntity().getFrontText();
 
@@ -109,10 +108,16 @@ public interface ProtectorSign extends Protector<SignBlockEntity> {
             for (int i = 1; i < users.length; i++) {
                 Component message = signText.getMessage(i, false);
 
-                var gameProfile = LiteLocker.server.getProfileCache().get(message.getString());
+                var messageString = message.getString();
+                if (messageString.isBlank()) {
+                    removeUser(i-1);
+                    continue;
+                }
+
+                //GameProfile by Name
+                var gameProfile = serverProfileCache.get(messageString);
 
                 if (gameProfile.isPresent()) {
-                    System.out.println(gameProfile);
                     final UUID playerUUID = gameProfile.get().getId();
 
                     users[i-1] = playerUUID;
@@ -121,12 +126,23 @@ public interface ProtectorSign extends Protector<SignBlockEntity> {
                             .copy().withStyle(ChatFormatting.ITALIC);
 
                 } else {
-                    removeUser(i-1);
+                    //GameProfile by UUID
+
+                    gameProfile = serverProfileCache.get(users[i-1]);
+
+                    if (gameProfile.isPresent()) {
+                        messageComponents[i] = Component.nullToEmpty(gameProfile.get().getName())
+                                .copy().withStyle(ChatFormatting.ITALIC);
+                    } else {
+                        messageComponents[i] = Component.nullToEmpty(messageString)
+                                .copy().withStyle(ChatFormatting.STRIKETHROUGH);
+                        removeUser(i-1);
+                    }
                 }
             }
 
 
-            setTextOverride(new SignText(messageComponents, messageComponents, signText.getColor(), signText.hasGlowingText()), true);
+            getBlockEntity().setText(new SignText(messageComponents, messageComponents, signText.getColor(), signText.hasGlowingText()), true);
 
             if (onComplete != null)
                 onComplete.run();
@@ -138,7 +154,4 @@ public interface ProtectorSign extends Protector<SignBlockEntity> {
         Protector.super.removeUser(i);
         getBlockEntity().getFrontText().setMessage(i+1, Component.nullToEmpty(getBlockEntity().getFrontText().getMessage(i+1, false).getString()));
     }
-
-
-    void setTextOverride(SignText signText, boolean frontSide);
 }

@@ -9,6 +9,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.network.FilteredText;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.WallSignBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -24,13 +26,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 @Mixin(SignBlockEntity.class)
 public abstract class SignBlockEntityMixin extends BlockEntity implements ProtectorSign, BlockEntityExtension {
     @Shadow protected abstract boolean setFrontText(SignText $$0);
-
-    @Shadow protected abstract boolean setBackText(SignText $$0);
 
     @Shadow public abstract SignText getFrontText();
 
@@ -39,6 +40,8 @@ public abstract class SignBlockEntityMixin extends BlockEntity implements Protec
     private boolean unloaded = false;
 
     private UUID[] playerUUIDs = new UUID[MAX_USERS];
+
+    private boolean main = false;
 
     public SignBlockEntityMixin(BlockEntityType<?> $$0, BlockPos $$1, BlockState $$2) {
         super($$0, $$1, $$2);
@@ -53,8 +56,8 @@ public abstract class SignBlockEntityMixin extends BlockEntity implements Protec
         attachedContainer = null;
     }
 
-    @Inject(method = "setText", at = @At("TAIL"))
-    public void setText(SignText signText, boolean frontSide, CallbackInfoReturnable<Boolean> cir) {
+    @Inject(method = "updateSignText", at = @At("TAIL"))
+    public void updateSignText(Player $$0, boolean $$1, List<FilteredText> $$2, CallbackInfo ci) {
         onChanged();
     }
 
@@ -71,14 +74,6 @@ public abstract class SignBlockEntityMixin extends BlockEntity implements Protec
 
     //Interface Overrides
 
-    @Override
-    public void setTextOverride(SignText signText, boolean frontSide) {
-        if (frontSide) {
-            this.setFrontText(signText);
-        } else {
-            this.setBackText(signText);
-        }
-    }
     @Override
     public void onUnload() {
         unloaded = true;
@@ -106,7 +101,18 @@ public abstract class SignBlockEntityMixin extends BlockEntity implements Protec
     public void setMain() {
         if (isRemoved())
             return;
+        main = true;
         setFrontText(getFrontText().setMessage(0, Component.literal(Tag.PRIVATE.tag).withStyle(ChatFormatting.BOLD)));
+    }
+
+    @Override
+    public boolean isMain() {
+        return main;
+    }
+
+    @Override
+    public void onDeactivate() {
+        main = false;
     }
 
     @Override
@@ -140,5 +146,10 @@ public abstract class SignBlockEntityMixin extends BlockEntity implements Protec
             return null;
         var attachedBlockEntity = getBlockEntity().getLevel().getBlockEntity(getAttachedBlock().blockPos());
         return attachedBlockEntity instanceof ProtectableBlockContainer ? ((ProtectableBlockContainer) attachedBlockEntity) : null;
+    }
+
+    @Override
+    public String toString() {
+        return super.toString() + " at " + getBlockPos() + " " + main;
     }
 }

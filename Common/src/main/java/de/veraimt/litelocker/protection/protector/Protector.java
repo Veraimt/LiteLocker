@@ -15,6 +15,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import javax.annotation.Nullable;
 import java.util.UUID;
 
+import static de.veraimt.litelocker.LiteLocker.LOGGER;
+
 public interface Protector<T extends BlockEntity> extends BlockEntityProvider<T>, Protectable {
 
     final class NbtKeys {
@@ -54,10 +56,17 @@ public interface Protector<T extends BlockEntity> extends BlockEntityProvider<T>
     default void activate() {
         var container = getAttachedContainer();
 
-        if (container != null) {
-            container.addProtector(this);
-
+        if (container == null) {
+            return;
         }
+
+        System.out.println("container: " + container + " at " + container.getBlockEntity().getBlockPos());
+        System.out.println("protectors: " + container.get().protectors());
+
+        if (!container.hasProtector()) {
+            this.setMain();
+        }
+        container.addProtector(this);
     }
 
     default void deactivate() {
@@ -66,14 +75,16 @@ public interface Protector<T extends BlockEntity> extends BlockEntityProvider<T>
         if (container != null) {
             container.removeProtector(this);
         }
+        onDeactivate();
     }
+
+    void onDeactivate();
 
     default void onRemoved() {
         deactivate();
     }
 
     default void onChanged() {
-        //TODO remove
         var valid = isValid();
         System.out.println("onChanged, isValid: " + valid);
         if (valid)
@@ -151,8 +162,17 @@ public interface Protector<T extends BlockEntity> extends BlockEntityProvider<T>
 
         //If Player is not on this Protector, search for it on the other Protectors that the attached Block has
 
+        var blockEntity = getBlockEntity();
+        var level = blockEntity.getLevel();
+
+        if (level == null) {
+            LOGGER.error("Level for Protector {} is null", blockEntity);
+            LOGGER.trace(Thread.currentThread().getStackTrace());
+            return false;
+        }
+
         var attachedBlock = getAttachedBlock();
-        var blockEntity = getBlockEntity().getLevel().getBlockEntity(attachedBlock.blockPos());
-        return AccessChecker.canAccess(blockEntity, player);
+        var attachedBlockEntity = level.getBlockEntity(attachedBlock.blockPos());
+        return AccessChecker.canAccess(attachedBlockEntity, player);
     }
 }

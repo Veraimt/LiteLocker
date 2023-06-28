@@ -60,7 +60,7 @@ public abstract class SignItemMixin extends StandingAndWallBlockItem implements 
         if (!signManager.tryAutoFill(player)) {
             return;
         }
-        signManager.activate();
+        //signManager.activate();
 
         cir.cancel();
 
