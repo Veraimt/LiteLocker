@@ -24,7 +24,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -107,6 +106,11 @@ public abstract class SignBlockEntityMixin extends BlockEntity implements Protec
     }
 
     @Override
+    public void unsetMain() {
+        main = false;
+    }
+
+    @Override
     public boolean isMain() {
         return main;
     }
@@ -127,10 +131,6 @@ public abstract class SignBlockEntityMixin extends BlockEntity implements Protec
         BlockPos pos = getBlockPos();
         BlockPos targetPos = pos.relative(facing, -1);
 
-        //TODO remove
-        System.out.println("this pos: " + pos + " attached: " + targetPos);
-        System.out.println(Arrays.toString(Thread.currentThread().getStackTrace()));
-
         return new BlockPosState(targetPos, getLevel().getBlockState(targetPos));
     }
 
@@ -143,9 +143,10 @@ public abstract class SignBlockEntityMixin extends BlockEntity implements Protec
     }
 
     private ProtectableBlockContainer getAttachedContainerInternal() {
-        if (getBlockEntity().getLevel() == null)
+        var level = getLevel();
+        if (level == null)
             return null;
-        var attachedBlockEntity = getBlockEntity().getLevel().getBlockEntity(getAttachedBlock().blockPos());
+        var attachedBlockEntity = level.getBlockEntity(getAttachedBlock().blockPos());
         return attachedBlockEntity instanceof ProtectableBlockContainer ? ((ProtectableBlockContainer) attachedBlockEntity) : null;
     }
 

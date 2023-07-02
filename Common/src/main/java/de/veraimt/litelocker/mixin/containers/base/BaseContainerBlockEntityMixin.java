@@ -25,13 +25,7 @@ public abstract class BaseContainerBlockEntityMixin extends BlockEntity implemen
     }
 
 
-    @Override
-    public void setRemoved() {
-        super.setRemoved();
-    }
-
     //Interface Overrides
-
 
     @Override
     public BaseContainerBlockEntity getBlockEntity() {

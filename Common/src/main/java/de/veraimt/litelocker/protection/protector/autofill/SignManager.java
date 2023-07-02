@@ -6,7 +6,6 @@ import net.minecraft.server.network.FilteredText;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class SignManager {
@@ -39,7 +38,6 @@ public class SignManager {
                     FilteredText.passThrough(ProtectorSign.Tag.PRIVATE.tag),
                     FilteredText.passThrough(player.getName().getString())
             ));
-            System.out.println(Arrays.toString(Thread.currentThread().getStackTrace()));
             return true;
         }
     }

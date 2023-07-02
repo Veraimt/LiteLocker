@@ -18,7 +18,7 @@ public class Protection {
         this.protectors = protectors;
     }
 
-    Set<Protector<?>> protectors;
+    final Set<Protector<?>> protectors;
 
     public void addProtector(Protector<?> protector) {
         protectors.add(protector);

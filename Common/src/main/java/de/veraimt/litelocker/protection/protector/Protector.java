@@ -60,9 +60,6 @@ public interface Protector<T extends BlockEntity> extends BlockEntityProvider<T>
             return;
         }
 
-        System.out.println("container: " + container + " at " + container.getBlockEntity().getBlockPos());
-        System.out.println("protectors: " + container.get().protectors());
-
         if (!container.hasProtector()) {
             this.setMain();
         }
@@ -86,7 +83,7 @@ public interface Protector<T extends BlockEntity> extends BlockEntityProvider<T>
 
     default void onChanged() {
         var valid = isValid();
-        System.out.println("onChanged, isValid: " + valid);
+        //System.out.println("onChanged, isValid: " + valid);
         if (valid)
             activate();
         else

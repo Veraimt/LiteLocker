@@ -20,8 +20,7 @@ public record BlockPosState(BlockPos blockPos, BlockState blockState) {
 
     @Override
     public String toString() {
-        return "{" +
-                "" + blockPos +
+        return "{" + blockPos +
                 ", " + blockState +
                 '}';
     }

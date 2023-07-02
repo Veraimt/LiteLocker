@@ -51,9 +51,11 @@ public interface ProtectorSign extends Protector<SignBlockEntity> {
         return Protector.super.isValid();
     }
 
+    void unsetMain();
+
     @Override
     default void activate() {
-        System.out.println("activate");
+        //System.out.println("activate");
         Component firstLine = getBlockEntity().getFrontText().getMessage(0, false);
 
         Tag tag = Tag.fromString(firstLine.getString());
@@ -72,14 +74,14 @@ public interface ProtectorSign extends Protector<SignBlockEntity> {
         if (container.hasProtector()) {
             if (!container.hasProtector(this)) {
                 firstLine = Component.nullToEmpty(Tag.MORE_USERS.tag);
+                unsetMain();
                 getBlockEntity().setText(getBlockEntity().getFrontText().setMessage(0, firstLine.copy().withStyle(ChatFormatting.BOLD)), true);
             }
-        } else {
-            setMain();
         }
-        updateGameProfiles(null);
 
         Protector.super.activate();
+
+        updateGameProfiles(null);
     }
 
     @Override
@@ -145,7 +147,9 @@ public interface ProtectorSign extends Protector<SignBlockEntity> {
                 } else {
                     //GameProfile by UUID
 
-                    gameProfile = serverProfileCache.get(users[i]);
+                    var uuid = users[i];
+
+                    gameProfile = uuid == null ? Optional.empty() : serverProfileCache.get(uuid);
 
                     if (gameProfile.isEmpty()) {
                         messageComponents[messageIndex] = Component.nullToEmpty(messageString)
