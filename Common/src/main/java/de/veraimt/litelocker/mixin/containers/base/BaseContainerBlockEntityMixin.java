@@ -30,13 +30,10 @@ public abstract class BaseContainerBlockEntityMixin extends BlockEntity implemen
 
     @Inject(method = "canOpen", at = @At("HEAD"), cancellable = true)
     public void canOpen(Player player, CallbackInfoReturnable<Boolean> cir) {
-
-        if (canAccess(player)) { //player can access container according to mod -> normal behavior
-            return;
-        } else {
-            //todo show locked message as if locked with minecraft feature
+        if (!canAccess(player)) {
             cir.setReturnValue(false);
         }
+        //player can access container according to mod -> normal behavior
     }
 
 

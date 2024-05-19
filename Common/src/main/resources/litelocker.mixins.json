@@ -17,7 +17,6 @@
     "containers.HopperBlockEntityMixin",
     "containers.base.BaseContainerBlockEntityMixin",
     "containers.base.CompoundContainerMixin",
-    "containers.base.ContainerBlockEntityMixin",
     "SignBlockMixin"
   ],
   "injectors": {

@@ -11,6 +11,9 @@ import net.minecraft.world.level.block.entity.SignText;
 
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.function.Consumer;
 
 import static de.veraimt.litelocker.LiteLocker.LOGGER;
@@ -96,10 +99,11 @@ public interface ProtectorSign extends Protector<SignBlockEntity> {
         getBlockEntity().setText(new SignText(messages, messages, signText.getColor(), signText.hasGlowingText()), true);
     }
 
+    ExecutorService GAME_PROFILE_EXECUTOR = new ScheduledThreadPoolExecutor(4);
+
     default void updateGameProfiles(final Consumer<SignText> onComplete) {
         //System.out.println(Arrays.toString(Thread.currentThread().getStackTrace()));
-        //TODO creating a new thread is inefficient, use an executor in the future
-        new Thread(() -> {
+        GAME_PROFILE_EXECUTOR.submit(() -> {
             var serverProfileCache = LiteLocker.server.getProfileCache();
 
             if (serverProfileCache == null) {
@@ -176,7 +180,7 @@ public interface ProtectorSign extends Protector<SignBlockEntity> {
 
             if (onComplete != null)
                 onComplete.accept(newSignText);
-        }).start();
+        });
     }
 
     default void updateGameProfiles() {

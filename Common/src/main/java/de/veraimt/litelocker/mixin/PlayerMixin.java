@@ -14,6 +14,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class PlayerMixin {
 
     /**
+     * Prevent player breaking protected blocks
      * @see net.minecraft.server.level.ServerPlayerGameMode#destroyBlock(BlockPos)
      */
     @Inject(method = "blockActionRestricted", at = @At("HEAD"), cancellable = true)
