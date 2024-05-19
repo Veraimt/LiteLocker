@@ -4,11 +4,15 @@ import de.veraimt.litelocker.protection.Protection;
 import de.veraimt.litelocker.protection.protectable.ProtectableBlockContainer;
 import de.veraimt.litelocker.utils.BlockEntityExtension;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import javax.annotation.Nullable;
 
@@ -22,6 +26,17 @@ public abstract class BaseContainerBlockEntityMixin extends BlockEntity implemen
 
     public BaseContainerBlockEntityMixin(BlockEntityType<?> $$0, BlockPos $$1, BlockState $$2) {
         super($$0, $$1, $$2);
+    }
+
+    @Inject(method = "canOpen", at = @At("HEAD"), cancellable = true)
+    public void canOpen(Player player, CallbackInfoReturnable<Boolean> cir) {
+
+        if (canAccess(player)) { //player can access container according to mod -> normal behavior
+            return;
+        } else {
+            //todo show locked message as if locked with minecraft feature
+            cir.setReturnValue(false);
+        }
     }
 
 

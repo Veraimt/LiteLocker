@@ -6,6 +6,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.ServerPlayerGameMode;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameType;
@@ -59,14 +60,13 @@ public class ServerPlayerGameModeMixin {
     }
 
     @Redirect(method = "useItemOn", at = @At(value = "INVOKE",
-            target = "Lnet/minecraft/world/level/block/state/BlockState;use(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/entity/player/Player;Lnet/minecraft/world/InteractionHand;Lnet/minecraft/world/phys/BlockHitResult;)Lnet/minecraft/world/InteractionResult;"))
-    public InteractionResult allowUse(BlockState instance, Level level, Player player,
-                                      InteractionHand interactionHand, BlockHitResult blockHitResult) {
+            target = "Lnet/minecraft/world/level/block/state/BlockState;useItemOn(Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/level/Level;Lnet/minecraft/world/entity/player/Player;Lnet/minecraft/world/InteractionHand;Lnet/minecraft/world/phys/BlockHitResult;)Lnet/minecraft/world/ItemInteractionResult;"))
+    public ItemInteractionResult allowUse(BlockState instance, ItemStack itemStack, Level level, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
         //Consume Action, if Player cannot access block
         if (!AccessChecker.canAccess(level, blockHitResult.getBlockPos(), player)) {
-            return InteractionResult.CONSUME;
+            return ItemInteractionResult.CONSUME;
         }
         //Normal Behavior
-        return instance.use(level, player, interactionHand, blockHitResult);
+        return instance.useItemOn(itemStack, level, player, interactionHand, blockHitResult);
     }
 }

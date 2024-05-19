@@ -7,6 +7,7 @@ import de.veraimt.litelocker.utils.BlockEntityExtension;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.network.FilteredText;
@@ -33,6 +34,7 @@ public abstract class SignBlockEntityMixin extends BlockEntity implements Protec
 
     @Shadow public abstract SignText getFrontText();
 
+    @Shadow private SignText frontText;
     private static final byte MAX_USERS = SignText.LINES -1;
     private ProtectableBlockContainer attachedContainer;
     private boolean unloaded = false;
@@ -60,15 +62,16 @@ public abstract class SignBlockEntityMixin extends BlockEntity implements Protec
     }
 
     @Inject(method = "saveAdditional", at = @At("HEAD"))
-    public void saveAdditional(CompoundTag compoundTag, CallbackInfo ci) {
+    public void saveAdditional(CompoundTag compoundTag, HolderLookup.Provider $$1, CallbackInfo ci) {
         saveNbt(compoundTag);
     }
 
-    @Inject(method = "load", at = @At("TAIL"))
-    public void load(CompoundTag compoundTag, CallbackInfo ci) {
+    @Inject(method = "loadAdditional", at = @At("TAIL"))
+    public void loadAdditional(CompoundTag compoundTag, HolderLookup.Provider $$1, CallbackInfo ci) {
         loadNbt(compoundTag);
         if (Tag.PRIVATE.tag.equals(getFrontText().getMessages(false)[0].getString()))
             main = true;
+        updateGameProfiles(signText -> frontText = signText);
         activate();
     }
 

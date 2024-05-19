@@ -12,6 +12,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+@Deprecated
 @Mixin({RandomizableContainerBlockEntity.class, AbstractFurnaceBlockEntity.class})
 public abstract class ContainerBlockEntityMixin extends BaseContainerBlockEntityMixin implements ProtectableContainer {
 
@@ -21,10 +22,14 @@ public abstract class ContainerBlockEntityMixin extends BaseContainerBlockEntity
         super($$0, $$1, $$2);
     }
 
+    /* outdated
+
     @Inject(method = "stillValid", at = @At("RETURN"), cancellable = true)
     public void stillValid(Player player, CallbackInfoReturnable<Boolean> cir) {
         //Minecraft Info
         //This Method is called every Tick from the Player as long as he has this container open
         cir.setReturnValue(cir.getReturnValue() && canAccess(player));
     }
+
+     */
 }
