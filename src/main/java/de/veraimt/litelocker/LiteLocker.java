@@ -19,14 +19,10 @@ public class LiteLocker implements ModInitializer {
     public static LiteLockerConfig config;
     public static MinecraftServer server;
 
-    static void init() {
+    @Override
+    public void onInitialize() {
         LOGGER.info("Loading {} on {}", MOD_NAME, PLATFORM.getPlatformName());
 
         config = CONFIG_LOADER.loadConfig();
-    }
-
-    @Override
-    public void onInitialize() {
-        init();
     }
 }

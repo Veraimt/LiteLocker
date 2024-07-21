@@ -48,6 +48,3 @@ class `net.minecraft.world.level.block.entity.BaseContainerBlockEntity`
 ### Mod Compatibility
 I try to make LiteLocker compatible with as many Mods as possible, but this is not prioritized.
 If you spot any incompatibilities with other Mods, report them under Issues.
-
-# Credits
-This project was created with the [MultiLoader Template](https://github.com/jaredlll08/MultiLoader-Template) by [jaredlll08](https://github.com/jaredlll08).
