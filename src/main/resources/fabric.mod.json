@@ -1,0 +1,34 @@
+{
+	"schemaVersion": 1,
+	"id": "litelocker",
+	"version": "${version}",
+
+	"name": "${mod_name}",
+	"description": "${description}",
+	"authors": [
+		"${authors}"
+	],
+	"contact": {
+		"homepage": "${homepage}",
+		"sources": "${sources}",
+		"issues": "${issues}"
+	},
+
+	"license": "${license}",
+	"icon": "assets/${mod_id}/icon.png",
+
+	"environment": "server",
+	"entrypoints": {
+		"main": [
+			"de.veraimt.litelocker.LiteLocker"
+		]
+	},
+	"mixins": [
+		"litelocker.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.15.10",
+		"minecraft": ">=${minecraft_version}",
+		"java": ">=21"
+	}
+}
