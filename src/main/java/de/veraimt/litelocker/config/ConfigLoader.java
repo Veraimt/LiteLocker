@@ -3,7 +3,6 @@ package de.veraimt.litelocker.config;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import de.veraimt.litelocker.LiteLocker;
-import de.veraimt.litelocker.platform.services.IPlatformHelper;
 
 import java.io.*;
 
@@ -12,7 +11,7 @@ import static de.veraimt.litelocker.LiteLocker.LOGGER;
 public class ConfigLoader {
 
     public static final String CONFIG_FILE_NAME = LiteLocker.MOD_ID + ".json";
-    private final File configFile = IPlatformHelper.PLATFORM.getConfigFile();
+    private final File configFile = LiteLocker.PLATFORM.getConfigFile();
 
     public LiteLockerConfig loadConfig() {
         if(!configFile.exists()) {
@@ -24,7 +23,7 @@ public class ConfigLoader {
         LiteLockerConfig config = null;
 
         try {
-            Reader reader = new BufferedReader(new FileReader(IPlatformHelper.PLATFORM.getConfigFile()));
+            Reader reader = new BufferedReader(new FileReader(LiteLocker.PLATFORM.getConfigFile()));
             config = gson.fromJson(reader, LiteLockerConfig.class);
             reader.close();
         } catch (IOException e) {
@@ -41,7 +40,7 @@ public class ConfigLoader {
                 .setPrettyPrinting()
                 .create();
 
-        try(Writer writer = new FileWriter(IPlatformHelper.PLATFORM.getConfigFile())) {
+        try(Writer writer = new FileWriter(LiteLocker.PLATFORM.getConfigFile())) {
             gson.toJson(config, writer);
             LOGGER.info("Successfully saved config!");
 

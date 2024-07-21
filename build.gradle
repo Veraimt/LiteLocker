@@ -5,10 +5,9 @@ plugins {
 }
 
 version = project.mod_version
-group = project.maven_group
 
 base {
-    archivesName = project.archives_base_name
+    archivesName = project.mod_id
 }
 
 repositories {
@@ -31,7 +30,7 @@ dependencies {
     //Fabric loader
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
-    // Fabric API. This is technically optional, but you probably want it anyway.
+    // Fabric API. This is technically optional, but you probably want it anyway. No!
     //modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
 }
@@ -68,7 +67,7 @@ jar {
 publishing {
     publications {
         create("mavenJava", MavenPublication) {
-            artifactId = project.archives_base_name
+            artifactId = project.mod_id
             from components.java
         }
     }
