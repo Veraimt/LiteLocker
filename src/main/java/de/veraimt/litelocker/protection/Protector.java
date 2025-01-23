@@ -1,9 +1,5 @@
-package de.veraimt.litelocker.protection.protector;
+package de.veraimt.litelocker.protection;
 
-import de.veraimt.litelocker.entities.BlockPosState;
-import de.veraimt.litelocker.protection.protectable.Protectable;
-import de.veraimt.litelocker.protection.protectable.ProtectableBlockContainer;
-import de.veraimt.litelocker.protection.protectable.ProtectableContainer;
 import de.veraimt.litelocker.utils.AccessChecker;
 import de.veraimt.litelocker.utils.BlockEntityProvider;
 import net.minecraft.nbt.CompoundTag;
@@ -41,54 +37,11 @@ public interface Protector<T extends BlockEntity> extends BlockEntityProvider<T>
      */
     void setMain();
 
-    BlockPosState getAttachedBlock();
-
     @Nullable
-    ProtectableBlockContainer getAttachedContainer();
+    ProtectableContainer getAttachedContainer();
 
     default boolean isValid() {
-        return isAttachedContainerValid();
-    }
-
-    default boolean isAttachedContainerValid() {
         return getAttachedContainer() != null;
-    }
-
-    default void activate() {
-        var container = getAttachedContainer();
-
-        if (container == null) {
-            return;
-        }
-
-        if (!container.hasProtector()) {
-            this.setMain();
-        }
-        container.addProtector(this);
-    }
-
-    default void deactivate() {
-        var container = getAttachedContainer();
-
-        if (container != null) {
-            container.removeProtector(this);
-        }
-        onDeactivate();
-    }
-
-    void onDeactivate();
-
-    default void onRemoved() {
-        deactivate();
-    }
-
-    default void onChanged() {
-        var valid = isValid();
-        //System.out.println("onChanged, isValid: " + valid);
-        if (valid)
-            activate();
-        else
-            deactivate();
     }
 
     /**
@@ -169,8 +122,6 @@ public interface Protector<T extends BlockEntity> extends BlockEntityProvider<T>
             return false;
         }
 
-        var attachedBlock = getAttachedBlock();
-        var attachedBlockEntity = level.getBlockEntity(attachedBlock.blockPos());
-        return AccessChecker.canAccess(attachedBlockEntity, player);
+        return AccessChecker.canAccess(getAttachedContainer().getBlockEntity(), player);
     }
 }

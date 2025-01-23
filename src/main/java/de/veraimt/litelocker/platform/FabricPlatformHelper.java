@@ -11,16 +11,6 @@ public class FabricPlatformHelper {
         return "Fabric";
     }
 
-    public boolean isModLoaded(String modId) {
-
-        return FabricLoader.getInstance().isModLoaded(modId);
-    }
-
-    public boolean isDevelopmentEnvironment() {
-
-        return FabricLoader.getInstance().isDevelopmentEnvironment();
-    }
-
     public File getConfigFile() {
         return FabricLoader.getInstance().getConfigDir().resolve(ConfigLoader.CONFIG_FILE_NAME).toFile();
     }
