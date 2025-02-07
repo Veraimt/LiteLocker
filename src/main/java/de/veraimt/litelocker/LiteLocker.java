@@ -4,6 +4,7 @@ import de.veraimt.litelocker.config.ConfigLoader;
 import de.veraimt.litelocker.config.LiteLockerConfig;
 import de.veraimt.litelocker.platform.FabricPlatformHelper;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.minecraft.server.MinecraftServer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,12 +18,20 @@ public class LiteLocker implements ModInitializer {
     private static final ConfigLoader CONFIG_LOADER = new ConfigLoader();
 
     public static LiteLockerConfig config;
-    public static MinecraftServer server;
+    private static MinecraftServer server;
 
     @Override
     public void onInitialize() {
         LOGGER.info("Loading {} on {}", MOD_NAME, PLATFORM.getPlatformName());
 
         config = CONFIG_LOADER.loadConfig();
+
+        ServerLifecycleEvents.SERVER_STARTING.register(server -> {
+            LiteLocker.server = server;
+        });
+    }
+
+    public static MinecraftServer getServer() {
+        return server;
     }
 }
