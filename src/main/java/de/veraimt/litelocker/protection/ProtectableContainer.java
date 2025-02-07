@@ -20,24 +20,20 @@ public interface ProtectableContainer extends Protectable, BlockEntityProvider<B
         return protectors().contains(protector);
     }
 
-    /**
-     * Checks every {@link Protector} if it has the player with the given UUID
-     * @param playerUUID UUID of the Player
-     * @return is this ProtectableContainer has the Player with the given UUID
-     */
-    default boolean hasUser(UUID playerUUID) {
-        for (var protector : protectors()) {
-            if (protector.hasUser(playerUUID))
-                return true;
-        }
-        return false;
-    }
-
     @Override
     default boolean canAccess(@Nullable Player player) {
         if (!hasProtector()) //has no protector, access granted
             return true;
 
-        return hasUser(player == null ? null : player.getUUID()); //check if this container has the user
+        UUID playerUUID = player == null ? null : player.getUUID();
+        boolean anyValid = false;
+        for (var protector : protectors()) {
+            if (!protector.isValid())
+                continue;
+            anyValid = true;
+            if (protector.canAccess(playerUUID))
+                return true;
+        }
+        return !anyValid;
     }
 }

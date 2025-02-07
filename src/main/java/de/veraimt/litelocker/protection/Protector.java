@@ -1,6 +1,5 @@
 package de.veraimt.litelocker.protection;
 
-import de.veraimt.litelocker.utils.AccessChecker;
 import de.veraimt.litelocker.utils.BlockEntityProvider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
@@ -8,7 +7,6 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.Nullable;
-
 
 import java.util.UUID;
 
@@ -25,8 +23,6 @@ public interface Protector<T extends BlockEntity> extends BlockEntityProvider<T>
     }
 
     UUID[] getUsers();
-
-    void setUsers(UUID[] users);
 
     /**
      * @return if this Protector is the main Protector for a {@link ProtectableContainer}
@@ -49,6 +45,8 @@ public interface Protector<T extends BlockEntity> extends BlockEntityProvider<T>
      * @param compoundTag the CompoundTag to which this Protectors data will be saved
      */
     default void saveNbt(CompoundTag compoundTag) {
+        if (!isValid()) return;
+
         CompoundTag data = new CompoundTag();
 
         CompoundTag usersTag = new CompoundTag();
@@ -73,6 +71,10 @@ public interface Protector<T extends BlockEntity> extends BlockEntityProvider<T>
      * @param compoundTag the CompoundTag from which this Protectors data will be loaded
      */
     default boolean loadNbt(CompoundTag compoundTag) {
+        if (!compoundTag.contains(NbtKeys.DATA)) {
+            return false;
+        }
+
         CompoundTag data = compoundTag.getCompound(NbtKeys.DATA);
 
         CompoundTag userTag = data.getCompound(NbtKeys.USERS);
@@ -89,14 +91,19 @@ public interface Protector<T extends BlockEntity> extends BlockEntityProvider<T>
         return true;
     }
 
-    default boolean hasUser(UUID playerUUID) {
+    default boolean canAccess(UUID playerUUID) {
         if (playerUUID == null)
             return false;
+        boolean hasUsers = false;
         for (var uuid : getUsers()) {
+            if (uuid == null) {
+                continue;
+            }
+            hasUsers = true;
             if (playerUUID.equals(uuid))
                 return true;
         }
-        return false;
+        return !hasUsers;
     }
 
     default void removeUser(int i) {
@@ -108,7 +115,7 @@ public interface Protector<T extends BlockEntity> extends BlockEntityProvider<T>
         if (!isValid())
             return true;
 
-        if (hasUser(player == null ? null : player.getUUID()))
+        if (canAccess(player == null ? null : player.getUUID()))
             return true;
 
         //If Player is not on this Protector, search for it on the other Protectors that the attached Block has
@@ -122,6 +129,7 @@ public interface Protector<T extends BlockEntity> extends BlockEntityProvider<T>
             return false;
         }
 
-        return AccessChecker.canAccess(getAttachedContainer().getBlockEntity(), player);
+        //getAttachedContainer is not null, as isValid checks this
+        return getAttachedContainer().canAccess(player);
     }
 }
