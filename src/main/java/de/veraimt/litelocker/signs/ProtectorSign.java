@@ -8,6 +8,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.entity.SignBlockEntity;
 import net.minecraft.world.level.block.entity.SignText;
 
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.function.Consumer;
 
@@ -81,6 +82,7 @@ public interface ProtectorSign extends Protector<SignBlockEntity> {
     default void updateGameProfilesOnLoad(Consumer<SignText> signTextConsumer) {
         //TODO remove debug
         System.out.println("updateGameProfilesOnLoad");
+        System.out.println(Arrays.toString(Thread.currentThread().getStackTrace()));
         updateGameProfiles(signTextConsumer, false);
     }
 
@@ -144,5 +146,17 @@ public interface ProtectorSign extends Protector<SignBlockEntity> {
 
     default Component getMessage(int index) {
         return getBlockEntity().getFrontText().getMessage(index, false);
+    }
+
+    @Override
+    default boolean shouldSave() {
+        boolean anyUsers = false;
+        for (var user : getUsers()) {
+            if (user != null) {
+                anyUsers = true;
+                break;
+            }
+        }
+        return anyUsers;
     }
 }

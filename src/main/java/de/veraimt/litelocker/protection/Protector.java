@@ -40,12 +40,14 @@ public interface Protector<T extends BlockEntity> extends BlockEntityProvider<T>
         return getAttachedContainer() != null;
     }
 
+    boolean shouldSave();
+
     /**
      * Saves this Protectors data to the given CompoundTag
      * @param compoundTag the CompoundTag to which this Protectors data will be saved
      */
     default void saveNbt(CompoundTag compoundTag) {
-        if (!isValid()) return;
+        if (!shouldSave()) return;
 
         CompoundTag data = new CompoundTag();
 
