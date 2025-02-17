@@ -2,6 +2,7 @@ package de.veraimt.litelocker;
 
 import de.veraimt.litelocker.config.ConfigLoader;
 import de.veraimt.litelocker.config.LiteLockerConfig;
+import de.veraimt.litelocker.events.Events;
 import de.veraimt.litelocker.platform.FabricPlatformHelper;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -29,6 +30,8 @@ public class LiteLocker implements ModInitializer {
         ServerLifecycleEvents.SERVER_STARTING.register(server -> {
             LiteLocker.server = server;
         });
+
+        Events.registerEvents();
     }
 
     public static MinecraftServer getServer() {
