@@ -48,13 +48,6 @@ public class BaseContainerBlockEntityMixin extends BlockEntity implements Protec
 
         return list;
     }
-
-    @Override
-    public BaseContainerBlockEntity getBlockEntity() {
-        return (BaseContainerBlockEntity) (Object) this;
-    }
-
-
     /* Injects and Redirects */
 
     @Unique

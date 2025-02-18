@@ -1,14 +1,12 @@
 package de.veraimt.litelocker.protection;
 
-import de.veraimt.litelocker.utils.BlockEntityProvider;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.UUID;
 
-public interface ProtectableContainer extends Protectable, BlockEntityProvider<BaseContainerBlockEntity> {
+public interface ProtectableContainer extends Protectable {
 
     List<Protector<?>> protectors();
 
