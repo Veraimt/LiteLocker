@@ -1,5 +1,6 @@
 package de.veraimt.litelocker.mixin;
 
+
 import de.veraimt.litelocker.utils.AccessChecker;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
@@ -16,9 +17,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class ExplosionDamageCalculatorMixin {
 
     @Inject(method = "shouldBlockExplode", at = @At("RETURN"), cancellable = true)
-    public void shouldBlockExplode(Explosion $$0, BlockGetter levelLike, BlockPos blockPos,
-                                   BlockState $$3, float $$4, CallbackInfoReturnable<Boolean> cir) {
-        if(!AccessChecker.canAccess(levelLike, blockPos, null)) {
+    public void shouldBlockExplode(Explosion explosion, BlockGetter blockGetter, BlockPos blockPos,
+                                   BlockState blockState, float f, CallbackInfoReturnable<Boolean> cir) {
+        if(!AccessChecker.canAccess(blockGetter, blockPos, null)) {
             cir.setReturnValue(false);
         }
     }

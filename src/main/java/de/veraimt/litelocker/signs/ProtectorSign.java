@@ -2,21 +2,15 @@ package de.veraimt.litelocker.signs;
 
 import com.mojang.authlib.GameProfile;
 import de.veraimt.litelocker.LiteLocker;
-import de.veraimt.litelocker.protection.protectable.ProtectableBlockContainer;
-import de.veraimt.litelocker.protection.protector.Protector;
+import de.veraimt.litelocker.protection.Protector;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.entity.SignBlockEntity;
 import net.minecraft.world.level.block.entity.SignText;
 
+import java.util.Arrays;
 import java.util.Optional;
-import java.util.UUID;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.ThreadPoolExecutor;
 import java.util.function.Consumer;
-
-import static de.veraimt.litelocker.LiteLocker.LOGGER;
 
 public interface ProtectorSign extends Protector<SignBlockEntity> {
 
@@ -41,155 +35,128 @@ public interface ProtectorSign extends Protector<SignBlockEntity> {
     @Override
     SignBlockEntity getBlockEntity();
 
+    default boolean hasTag() {
+        var firstLine = getMessage(0);
+
+        Tag tag = Tag.fromString(firstLine.getString());
+
+        return tag != null;
+    }
 
     @Override
     default boolean isValid() {
-        var firstLine = getBlockEntity().getFrontText().getMessage(0, false);
-
-        Tag tag = Tag.fromString(firstLine.getString());
-
-        if (tag == null) {
-            return false;
-        }
-
-        return Protector.super.isValid();
+        return hasTag() && Protector.super.isValid();
     }
 
-    void unsetMain();
-
-    @Override
     default void activate() {
-        //System.out.println("activate");
-        Component firstLine = getBlockEntity().getFrontText().getMessage(0, false);
-
-        Tag tag = Tag.fromString(firstLine.getString());
-
-        if (tag == null) {
-            Protector.super.deactivate();
+        //TODO remove debug
+        System.out.println("activate");
+        if (!isValid()) {
+            deactivate();
             return;
         }
 
-        ProtectableBlockContainer container = getAttachedContainer();
+        updateGameProfilesOnUpdate(signText -> {
+            getBlockEntity().setText(signText, true);
 
-        if (container == null) {
-            return;
-        }
 
-        if (container.hasProtector()) {
-            if (!container.hasProtector(this)) {
-                firstLine = Component.nullToEmpty(Tag.MORE_USERS.tag);
-                unsetMain();
-                getBlockEntity().setText(getBlockEntity().getFrontText().setMessage(0, firstLine.copy().withStyle(ChatFormatting.BOLD)), true);
-            }
-        }
+            Component firstLine = getMessage(0).copy().withStyle(ChatFormatting.BOLD);
+            getBlockEntity().setText(getBlockEntity().getFrontText().setMessage(0, firstLine), true);
 
-        Protector.super.activate();
+            //TODO remove debug
+            System.out.println("activate complete");
+        });
 
-        updateGameProfiles();
+
     }
 
-    @Override
     default void deactivate() {
-        Protector.super.deactivate();
         var signText = getBlockEntity().getFrontText();
         var messages = signText.getMessages(false);
         for (int i = 0; i < messages.length; i++) {
-            messages[i] = Component.nullToEmpty(messages[i].getString());
+            messages[i] = messages[i].plainCopy();
         }
         getBlockEntity().setText(new SignText(messages, messages, signText.getColor(), signText.hasGlowingText()), true);
     }
 
-    ExecutorService GAME_PROFILE_EXECUTOR = new ScheduledThreadPoolExecutor(4);
+    default void updateGameProfilesOnLoad(Consumer<SignText> signTextConsumer) {
+        //TODO remove debug
+        System.out.println("updateGameProfilesOnLoad");
+        System.out.println(Arrays.toString(Thread.currentThread().getStackTrace()));
+        updateGameProfiles(signTextConsumer, false);
+    }
 
-    default void updateGameProfiles(final Consumer<SignText> onComplete) {
-        //System.out.println(Arrays.toString(Thread.currentThread().getStackTrace()));
-        GAME_PROFILE_EXECUTOR.submit(() -> {
-            var serverProfileCache = LiteLocker.server.getProfileCache();
+    default void updateGameProfilesOnUpdate(Consumer<SignText> signTextConsumer) {
+        //TODO remove debug
+        System.out.println("updateGameProfilesOnUpdate");
+        updateGameProfiles(signTextConsumer, true);
+    }
 
-            if (serverProfileCache == null) {
-                LOGGER.error("ServerProfileCache is null!");
-                return;
-            }
 
+    default void updateGameProfiles(Consumer<SignText> signTextConsumer, boolean byName) {
+        //TODO use an executor instead of creating a new thread
+        new Thread(() -> {
             var users = getUsers();
             var signText = getBlockEntity().getFrontText();
+            var serverProfileCache = LiteLocker.getServer().getProfileCache();
 
             var messageComponents = signText.getMessages(false);
             for (int i = 0; i < users.length; i++) {
                 var messageIndex = i+1;
-                Component message = signText.getMessage(messageIndex, false);
-                var messageString = message.getString();
+                var messageString = signText.getMessage(messageIndex, false).getString();
 
-                //OwnerLine: Main sign and first line
-                var preventUserModification = messageIndex == 1 && isMain() && !LiteLocker.config.getCanRemoveSignCreator();
+                //TODO remove debug
+                System.out.println("messageString: " + messageString);
 
-                Optional<GameProfile> gameProfile;
-                if (messageString.isBlank()) {
-                    //Message blank
-                    if (preventUserModification) {
-                        //empty Optional to get GameProfile by UUID
-                        gameProfile = Optional.empty();
-                    } else {
-                        removeUser(i);
-                        continue;
-                    }
-                } else {
-                    //Message not blank
-                    //if handling OwnerLine and a UUID is present using empty Optional to get GameProfile by UUID
-                    //otherwise get GameProfile by Name
-
-                    if (preventUserModification && users[i] != null) {
-                        gameProfile = Optional.empty();
-                    } else {
-                        //this potentially does a lookup via the network
-                        gameProfile = serverProfileCache.get(messageString);
-                    }
+                if (messageString.isBlank()) {//no text -> remove
+                    removeUser(i);
+                    continue;
                 }
 
-                //GameProfile by Name
-                if (gameProfile.isPresent()) {
-                    final UUID playerUUID = gameProfile.get().getId();
-
-                    users[i] = playerUUID;
-                } else {
-                    //GameProfile by UUID
-
-                    var uuid = users[i];
-
-                    gameProfile = uuid == null ? Optional.empty() : serverProfileCache.get(uuid);
-
-                    if (gameProfile.isEmpty()) {
-                        messageComponents[messageIndex] = Component.nullToEmpty(messageString)
-                                .copy().withStyle(ChatFormatting.STRIKETHROUGH);
-                        removeUser(i);
-                        continue;
-                    }
+                Optional<GameProfile> gameProfile = Optional.empty();
+                if (users[i] != null && !byName) { //UUID present do lookup via it
+                    gameProfile = serverProfileCache.get(users[i]);
                 }
 
-                ChatFormatting[] style;
-                if (preventUserModification) {
-                    style = new ChatFormatting[] {ChatFormatting.ITALIC, ChatFormatting.UNDERLINE};
-                } else {
-                    style = new ChatFormatting[] {ChatFormatting.ITALIC};
+                //TODO remove debug
+                System.out.println("gameProfile by UUID: " + gameProfile);
+
+                if (gameProfile.isEmpty()) {
+                    gameProfile = serverProfileCache.get(messageString);
                 }
-                messageComponents[messageIndex] = Component.nullToEmpty(gameProfile.get().getName())
-                        .copy().withStyle(style);
+
+                //TODO remove debug
+                System.out.println("gameProfile: " + gameProfile);
+
+                if (gameProfile.isEmpty()) {
+                    //make text strikethrough so that the users sees that this name is invalid
+                    messageComponents[messageIndex] = messageComponents[messageIndex].plainCopy().withStyle(ChatFormatting.STRIKETHROUGH);
+                    removeUser(i);
+                    continue;
+                }
+
+                //make text italic as indication of success
+                messageComponents[messageIndex] = Component.literal(gameProfile.get().getName()).withStyle(ChatFormatting.ITALIC);
+                users[i] = gameProfile.get().getId();
             }
-
-            var newSignText = new SignText(messageComponents, messageComponents, signText.getColor(), signText.hasGlowingText());
-
-            if (onComplete != null)
-                onComplete.accept(newSignText);
-        });
+            signText = new SignText(messageComponents, messageComponents, signText.getColor(), signText.hasGlowingText());
+            signTextConsumer.accept(signText);
+        }).start();
     }
 
-    default void updateGameProfiles() {
-        updateGameProfiles(signText -> getBlockEntity().setText(signText, true));
+    default Component getMessage(int index) {
+        return getBlockEntity().getFrontText().getMessage(index, false);
     }
 
     @Override
-    default void removeUser(int i) {
-        Protector.super.removeUser(i);
-        getBlockEntity().getFrontText().setMessage(i+1, Component.nullToEmpty(getBlockEntity().getFrontText().getMessage(i+1, false).getString()));
+    default boolean shouldSave() {
+        boolean anyUsers = false;
+        for (var user : getUsers()) {
+            if (user != null) {
+                anyUsers = true;
+                break;
+            }
+        }
+        return anyUsers;
     }
 }

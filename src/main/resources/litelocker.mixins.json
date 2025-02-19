@@ -2,22 +2,16 @@
   "required": true,
   "minVersion": "0.8",
   "package": "de.veraimt.litelocker.mixin",
-  "refmap": "${refmap_target}refmap.json",
-  "compatibilityLevel": "JAVA_17",
+  "refmap": "litelocker-refmap.json",
+  "compatibilityLevel": "JAVA_21",
   "mixins": [
     "ExplosionDamageCalculatorMixin",
-    "PlayerMixin",
-    "ServerMainMixin",
-    "ServerPlayerGameModeMixin",
-    "SignBlockEntityMixin",
-    "SignItemMixin",
-    "api.BlockEntityMixin",
-    "api.LevelChunkMixin",
     "containers.ChestBlockEntityMixin",
-    "containers.HopperBlockEntityMixin",
+    "containers.CompoundContainerMixin",
     "containers.base.BaseContainerBlockEntityMixin",
-    "containers.base.CompoundContainerMixin",
-    "SignBlockMixin"
+    "signs.SignBLockEntityMixin",
+    "signs.SignBlockMixin",
+    "signs.SignItemMixin"
   ],
   "injectors": {
     "defaultRequire": 1

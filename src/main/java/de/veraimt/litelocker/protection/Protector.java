@@ -1,10 +1,5 @@
-package de.veraimt.litelocker.protection.protector;
+package de.veraimt.litelocker.protection;
 
-import de.veraimt.litelocker.entities.BlockPosState;
-import de.veraimt.litelocker.protection.protectable.Protectable;
-import de.veraimt.litelocker.protection.protectable.ProtectableBlockContainer;
-import de.veraimt.litelocker.protection.protectable.ProtectableContainer;
-import de.veraimt.litelocker.utils.AccessChecker;
 import de.veraimt.litelocker.utils.BlockEntityProvider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
@@ -12,7 +7,6 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.Nullable;
-
 
 import java.util.UUID;
 
@@ -30,8 +24,6 @@ public interface Protector<T extends BlockEntity> extends BlockEntityProvider<T>
 
     UUID[] getUsers();
 
-    void setUsers(UUID[] users);
-
     /**
      * @return if this Protector is the main Protector for a {@link ProtectableContainer}
      */
@@ -41,61 +33,22 @@ public interface Protector<T extends BlockEntity> extends BlockEntityProvider<T>
      */
     void setMain();
 
-    BlockPosState getAttachedBlock();
-
     @Nullable
-    ProtectableBlockContainer getAttachedContainer();
+    ProtectableContainer getAttachedContainer();
 
     default boolean isValid() {
-        return isAttachedContainerValid();
-    }
-
-    default boolean isAttachedContainerValid() {
         return getAttachedContainer() != null;
     }
 
-    default void activate() {
-        var container = getAttachedContainer();
-
-        if (container == null) {
-            return;
-        }
-
-        if (!container.hasProtector()) {
-            this.setMain();
-        }
-        container.addProtector(this);
-    }
-
-    default void deactivate() {
-        var container = getAttachedContainer();
-
-        if (container != null) {
-            container.removeProtector(this);
-        }
-        onDeactivate();
-    }
-
-    void onDeactivate();
-
-    default void onRemoved() {
-        deactivate();
-    }
-
-    default void onChanged() {
-        var valid = isValid();
-        //System.out.println("onChanged, isValid: " + valid);
-        if (valid)
-            activate();
-        else
-            deactivate();
-    }
+    boolean shouldSave();
 
     /**
      * Saves this Protectors data to the given CompoundTag
      * @param compoundTag the CompoundTag to which this Protectors data will be saved
      */
     default void saveNbt(CompoundTag compoundTag) {
+        if (!shouldSave()) return;
+
         CompoundTag data = new CompoundTag();
 
         CompoundTag usersTag = new CompoundTag();
@@ -120,6 +73,10 @@ public interface Protector<T extends BlockEntity> extends BlockEntityProvider<T>
      * @param compoundTag the CompoundTag from which this Protectors data will be loaded
      */
     default boolean loadNbt(CompoundTag compoundTag) {
+        if (!compoundTag.contains(NbtKeys.DATA)) {
+            return false;
+        }
+
         CompoundTag data = compoundTag.getCompound(NbtKeys.DATA);
 
         CompoundTag userTag = data.getCompound(NbtKeys.USERS);
@@ -136,14 +93,19 @@ public interface Protector<T extends BlockEntity> extends BlockEntityProvider<T>
         return true;
     }
 
-    default boolean hasUser(UUID playerUUID) {
+    default boolean canAccess(UUID playerUUID) {
         if (playerUUID == null)
             return false;
+        boolean hasUsers = false;
         for (var uuid : getUsers()) {
+            if (uuid == null) {
+                continue;
+            }
+            hasUsers = true;
             if (playerUUID.equals(uuid))
                 return true;
         }
-        return false;
+        return !hasUsers;
     }
 
     default void removeUser(int i) {
@@ -155,7 +117,7 @@ public interface Protector<T extends BlockEntity> extends BlockEntityProvider<T>
         if (!isValid())
             return true;
 
-        if (hasUser(player == null ? null : player.getUUID()))
+        if (canAccess(player == null ? null : player.getUUID()))
             return true;
 
         //If Player is not on this Protector, search for it on the other Protectors that the attached Block has
@@ -169,8 +131,7 @@ public interface Protector<T extends BlockEntity> extends BlockEntityProvider<T>
             return false;
         }
 
-        var attachedBlock = getAttachedBlock();
-        var attachedBlockEntity = level.getBlockEntity(attachedBlock.blockPos());
-        return AccessChecker.canAccess(attachedBlockEntity, player);
+        //getAttachedContainer is not null, as isValid checks this
+        return getAttachedContainer().canAccess(player);
     }
 }
